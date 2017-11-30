@@ -1,0 +1,63 @@
+package com.example.zz.zhihu;
+
+import android.content.Context;
+import android.media.Image;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+
+import java.util.List;
+
+public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.ViewHolder>{
+
+    private List<Column> mColumnList;
+    private Context mContext;
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        View columnView;
+        ImageView columnImage;
+        TextView columnName;
+        TextView columnDescription;
+
+        public ViewHolder(View view) {
+            super(view);
+            columnView = view;
+            columnImage = view.findViewById(R.id.column_image);
+            columnName = view.findViewById(R.id.column_name);
+            columnDescription=view.findViewById(R.id.column_description);
+        }
+    }
+
+    public ColumnAdapter(List<Column> columnList) {
+        mColumnList = columnList;
+    }
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (mContext == null) {
+            mContext = parent.getContext();
+        }
+        View view = LayoutInflater.from(mContext).inflate(R.layout.column_item, parent, false);
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        Column column = mColumnList.get(position);
+        holder.columnName.setText(column.getName());
+        holder.columnDescription.setText(column.getDescription());
+        Glide.with(mContext).load(column.getThumbnail()).asBitmap().into(holder.columnImage);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mColumnList.size();
+    }
+
+}
