@@ -31,17 +31,17 @@ api来源为[知乎日报api分析][zhihu_api]
 >URL: http://news-at.zhihu.com/api/3/section/1  
 >URL 最后的数字见『栏目总览』中相应栏目的 id 属性  
 >响应实例：  
->>  {  
->>      news: [  
->>          {  
->>              date: "20140522",  
->>              display_date: "5 月 22 日"  
->>          },  
->>      ...  
->>      ],  
->>      name: "深夜食堂",  
->>      timestamp: 1398780001  
->>  } 
+>>*  {  
+>>*      news: [  
+>>*          {  
+>>*              date: "20140522",  
+>>*              display_date: "5 月 22 日"  
+>>*          },  
+>>*      ...  
+>>*      ],  
+>>*      name: "深夜食堂",  
+>>*      timestamp: 1398780001  
+>>*  } 
 
 >往前：http://news-at.zhihu.com/api/3/section/1/before/1398780001  
 >在 URL 最后加上一个时间戳，时间戳详见 JSON 数据末端的 timestamp 属性
