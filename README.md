@@ -11,17 +11,17 @@ api来源为[知乎日报api分析][zhihu_api]
 >请注意！ 此 API 仍可访问，但是其内容未出现在最新的『知乎日报』 App 中。  
 >URL: http://news-at.zhihu.com/api/3/sections  
 >响应实例:  
->>  {  
->>      data: [  
->>          {  
->>              id: 1,  
->>              thumbnail: "http://p2.zhimg.com/10/b8/10b8193dd6a3404d31b2c50e1e232c87.jpg",  
->>              name: "深夜食堂",  
->>              description: "睡前宵夜，用别人的故事下酒"  
->>          },  
->>      ...  
->>      ]  
->>  } 
+>>*  {  
+>>*      data: [  
+>>*          {  
+>>*              id: 1,  
+>>*              thumbnail: "http://p2.zhimg.com/10/b8/10b8193dd6a3404d31b2c50e1e232c87.jpg",  
+>>*              name: "深夜食堂",  
+>>*              description: "睡前宵夜，用别人的故事下酒"  
+>>*          },  
+>>*      ...  
+>>*      ]  
+>>*  } 
 
 >同样，注意使用 thumbnail 获取图像的地址
 
