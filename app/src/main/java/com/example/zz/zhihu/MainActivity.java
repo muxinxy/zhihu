@@ -1,6 +1,7 @@
 package com.example.zz.zhihu;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -9,10 +10,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
+import android.view.View;
+import android.widget.Adapter;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -28,18 +30,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private List<Column> columnList = new ArrayList<Column>();
-    RecyclerView.LayoutManager recyclerViewlayoutManager;
+    private List<Column> columnList = new ArrayList<>();
 
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ColumnAdapter ColumnAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         RecyclerView recyclerView = findViewById(R.id.rev_main);
-        recyclerViewlayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(recyclerViewlayoutManager);
+        ColumnAdapter=new ColumnAdapter(columnList);
+
+        GridLayoutManager layoutManager=new GridLayoutManager(this,1);
+        recyclerView.setLayoutManager(layoutManager);
+
         swipeRefreshLayout=findViewById(R.id.sre_main);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,R.color.colorAccent,R.color.colorButton);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -50,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         swipeRefreshLayout.setRefreshing(false);
+                        columnList.clear();
                         sendRequestWithHttpURLConnection();
                     }
                 }, 3000);
@@ -61,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         } else{
             sendRequestWithHttpURLConnection();
         }
+        recyclerView.setAdapter(ColumnAdapter);
     }
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
         switch (requestCode){
