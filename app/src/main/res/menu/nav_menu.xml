@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_person"
+            android:icon="@drawable/person"
+            android:title="修改个人资料"/>
+        <item
+            android:id="@+id/nav_column"
+            android:icon="@drawable/column"
+            android:title="栏目总览"/>
+        <item
+            android:id="@+id/nav_collection"
+            android:icon="@drawable/collection"
+            android:title="收藏"/>
+    </group>
+    <item android:title="其他">
+        <menu>
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/about"
+                android:title="关于"/>
+            <item
+                android:id="@+id/nav_quit"
+                android:icon="@drawable/quit"
+                android:title="退出登录"/>
+        </menu>
+    </item>
+</menu>

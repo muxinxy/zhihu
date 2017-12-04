@@ -1,17 +1,31 @@
 package com.example.zz.zhihu;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,20 +37,90 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private List<Column> columnList = new ArrayList<>();
-
+    private DrawerLayout mydrawerLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private MyDatabaseHelper dbHelper;
     private ColumnAdapter ColumnAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        dbHelper =new MyDatabaseHelper(this,"data.db",null,1) ;
+        dbHelper.getWritableDatabase();
+
+        Intent intent=getIntent();
+        final String username_intent=intent.getStringExtra("username_intent");
+
         RecyclerView recyclerView = findViewById(R.id.rev_main);
         ColumnAdapter=new ColumnAdapter(columnList);
+
+        Toolbar toolbar = findViewById(R.id.toolbar_main);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar=getSupportActionBar();
+        if(actionBar!=null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.menu);
+            actionBar.setTitle("");
+        }
+
+        mydrawerLayout=findViewById(R.id.drawer_layout);
+        NavigationView navView=findViewById(R.id.nav_view);
+
+        navView.setCheckedItem(R.id.username_header);
+        View headerView = navView.getHeaderView(0);
+        ImageView user_image = headerView.findViewById(R.id.user_image);
+        TextView username_header=headerView.findViewById(R.id.username_header);
+        SQLiteDatabase sdb = dbHelper.getReadableDatabase();
+        Cursor cursor=sdb.query("user_table",null,null,null,null,null,null);
+        if (cursor.moveToFirst()) {
+            do {
+                String username=cursor.getString(cursor.getColumnIndex("username"));
+                String nickname=cursor.getString(cursor.getColumnIndex("nickname"));
+                String userimage=cursor.getColumnName(cursor.getColumnIndex("user_image"));
+                if (username.equals(username_intent)){
+                    username_header.setText(nickname);
+                    Glide.with(this).load(userimage).asBitmap().placeholder(R.drawable.zhihu).error(R.drawable.zhihu).into(user_image);
+                    break;
+                }
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.nav_person:
+                        Intent intent=new Intent(MainActivity.this,PersonActivity.class);
+                        intent.putExtra("username_intent",username_intent);
+                        startActivity(intent);
+                        break;
+                    case R.id.nav_about:
+                        Intent intent2=new Intent(MainActivity.this,AboutActivity.class);
+                        startActivity(intent2);
+                        break;
+                    case R.id.nav_quit:
+                        Intent intent1=new Intent(MainActivity.this,LoginActivity.class);
+                        startActivity(intent1);
+                        finish();
+                        break;
+                    case R.id.nav_collection:
+                        Intent intent3=new Intent(MainActivity.this,CollectionActivity.class);
+                        startActivity(intent3);
+                        break;
+                }
+                mydrawerLayout.closeDrawers();
+                return true;
+            }
+        });
+
 
         GridLayoutManager layoutManager=new GridLayoutManager(this,1);
         recyclerView.setLayoutManager(layoutManager);
@@ -146,5 +230,14 @@ public class MainActivity extends AppCompatActivity {
                 recyclerView.setAdapter(adapter);
             }
         });
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mydrawerLayout.openDrawer(GravityCompat.START);
+                break;
+        }
+        return true;
     }
 }
