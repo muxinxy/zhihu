@@ -56,6 +56,7 @@ public class SignUpActivity extends AppCompatActivity {
                     values.put("nickname",sign_nickname.getText().toString().trim());
                     values.put("username", sign_username.getText().toString().trim());
                     values.put("password", sign_password.getText().toString().trim());
+                    values.put("sex","m");
                     db.insert("user_table", null, values);
                     values.clear();
                     Toast.makeText(SignUpActivity.this, "注册成功", Toast.LENGTH_SHORT).show();

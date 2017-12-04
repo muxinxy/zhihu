@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.UiThread;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private MyDatabaseHelper dbHelper;
     private ColumnAdapter ColumnAdapter;
+    private String username_intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +73,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         mydrawerLayout=findViewById(R.id.drawer_layout);
-        NavigationView navView=findViewById(R.id.nav_view);
 
+        NavigationView navView=findViewById(R.id.nav_view);
         navView.setCheckedItem(R.id.username_header);
         View headerView = navView.getHeaderView(0);
         ImageView user_image = headerView.findViewById(R.id.user_image);
@@ -83,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             do {
                 String username=cursor.getString(cursor.getColumnIndex("username"));
                 String nickname=cursor.getString(cursor.getColumnIndex("nickname"));
-                String userimage=cursor.getColumnName(cursor.getColumnIndex("user_image"));
+                String userimage=cursor.getString(cursor.getColumnIndex("user_image"));
                 if (username.equals(username_intent)){
                     username_header.setText(nickname);
                     Glide.with(this).load(userimage).asBitmap().placeholder(R.drawable.zhihu).error(R.drawable.zhihu).into(user_image);
@@ -92,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
             }while (cursor.moveToNext());
         }
         cursor.close();
-
+        navView.setCheckedItem(R.id.username_header);
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -101,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent=new Intent(MainActivity.this,PersonActivity.class);
                         intent.putExtra("username_intent",username_intent);
                         startActivity(intent);
+                        finish();
                         break;
                     case R.id.nav_about:
                         Intent intent2=new Intent(MainActivity.this,AboutActivity.class);
@@ -239,5 +242,39 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return true;
+    }
+    protected void onResume(){
+        super.onResume();
+        NavigationView navView=findViewById(R.id.nav_view);
+        navView.setCheckedItem(R.id.username_header);
+        View headerView = navView.getHeaderView(0);
+        ImageView user_image = headerView.findViewById(R.id.user_image);
+        TextView username_header=headerView.findViewById(R.id.username_header);
+        SQLiteDatabase sdb = dbHelper.getReadableDatabase();
+        Cursor cursor=sdb.query("user_table",null,null,null,null,null,null);
+        if (cursor.moveToFirst()) {
+            do {
+                String username=cursor.getString(cursor.getColumnIndex("username"));
+                String nickname=cursor.getString(cursor.getColumnIndex("nickname"));
+                String userimage=cursor.getString(cursor.getColumnIndex("user_image"));
+                if (username.equals(username_intent)){
+                    username_header.setText(nickname);
+                    Glide.with(this).load(userimage).asBitmap().placeholder(R.drawable.zhihu).error(R.drawable.zhihu).into(user_image);
+                    break;
+                }
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,Intent data){
+        switch (requestCode){
+            case 1:
+                if (requestCode==RESULT_OK){
+                    username_intent=data.getStringExtra("username_intent");
+                }
+                break;
+            default:
+        }
     }
 }
