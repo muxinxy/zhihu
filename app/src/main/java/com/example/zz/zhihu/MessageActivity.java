@@ -1,12 +1,16 @@
 package com.example.zz.zhihu;
 
 import android.Manifest;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +19,12 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -33,13 +42,19 @@ public class MessageActivity extends AppCompatActivity {
     private List<Message> messageList = new ArrayList<>();
     RecyclerView.LayoutManager recyclerViewlayoutManager;
     private String columnId_intent;
+    private String username_intent;
+    private MyDatabaseHelper dbHelper;
 
+    private boolean collect_column=false;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
+
+        dbHelper =new MyDatabaseHelper(this,"data.db",null,1) ;
+        dbHelper.getWritableDatabase();
 
         Toolbar toolbar = findViewById(R.id.toolbar_message);
         setSupportActionBar(toolbar);
@@ -51,6 +66,7 @@ public class MessageActivity extends AppCompatActivity {
 
         Intent intent=getIntent();
         columnId_intent=intent.getStringExtra("columnId_intent");
+        username_intent=intent.getStringExtra("username_intent");
 
         RecyclerView recyclerView = findViewById(R.id.rev_message);
         MessageAdapter adapter = new MessageAdapter(messageList);
@@ -59,6 +75,20 @@ public class MessageActivity extends AppCompatActivity {
         recyclerViewlayoutManager = new LinearLayoutManager(this);
         GridLayoutManager layoutManager=new GridLayoutManager(this,1);
         recyclerView.setLayoutManager(layoutManager);
+
+        SQLiteDatabase sdb = dbHelper.getReadableDatabase();
+        Cursor cursor=sdb.query("collection_table",null,null,null,null,null,null);
+        if (cursor.moveToFirst()) {
+            do {
+                String username=cursor.getString(cursor.getColumnIndex("username"));
+                String column=cursor.getString(cursor.getColumnIndex("collection_column"));
+                if (username.equals(username_intent)&&column.equals("http://news-at.zhihu.com/api/3/sections/"+columnId_intent)){
+                    collect_column=true;
+                    break;
+                }
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
 
         swipeRefreshLayout=findViewById(R.id.sre_message);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,R.color.colorAccent,R.color.colorButton);
@@ -174,4 +204,37 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
     }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu,menu) ;
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.Collect_Column:
+                if (!collect_column){
+                    SQLiteDatabase db = dbHelper.getWritableDatabase();
+                    ContentValues values = new ContentValues();
+                    values.put("collection_column","http://news-at.zhihu.com/api/3/section/"+columnId_intent);
+                    values.put("username",username_intent);
+                    db.insert("collection_table", null, values);
+                    values.clear();
+                    collect_column=true;
+                    Toast.makeText(MessageActivity.this,"已收藏",Toast.LENGTH_SHORT).show();
+                }else Toast.makeText(MessageActivity.this,"收藏已存在",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.QuitCollect_Column:
+                if (collect_column){
+                    SQLiteDatabase db = dbHelper.getWritableDatabase();
+                    db.delete("collection_table","collection_column=?",new String[]{"http://news-at.zhihu.com/api/3/section/"+columnId_intent});
+                    collect_column=false;
+                    Toast.makeText(MessageActivity.this,"已取消收藏",Toast.LENGTH_SHORT).show();
+                }else Toast.makeText(MessageActivity.this,"收藏不存在",Toast.LENGTH_SHORT).show();
+            default:
+        }
+        return true;
+    }
+
 }

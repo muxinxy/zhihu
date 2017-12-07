@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -49,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
     private MyDatabaseHelper dbHelper;
     private ColumnAdapter ColumnAdapter;
     private String username_intent;
-    private boolean like=false;
 
 
     @Override
@@ -158,36 +158,22 @@ public class MainActivity extends AppCompatActivity {
             sendRequestWithHttpURLConnection();
         }
         recyclerView.setAdapter(ColumnAdapter);
-
-        ImageView columnLike=findViewById(R.id.column_like);
-        /*if (columnLike.getDrawable().getCurrent().getConstantState()==(getResources().getDrawable(R.drawable.like1).getConstantState())){
-            like=true;
-        }
-        if (!like){
-            Glide.with(this).load(R.drawable.like1).asBitmap().into(columnLike);
-            like=true;
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
-            ContentValues values = new ContentValues();
-            values.put("like_id",Column.getId());
-            db.insert("like_table", null, values);
-            values.clear();
-            db.close();
-        }
-        else {
-            Glide.with(this).load(R.drawable.like0).asBitmap().into(columnLike);
-            like=false;
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
-            db.delete("like_table", "like_id=?",new String[]{Column.getId()});
-            db.close();
-        }*/
-
+        ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                final Column column = columnList.get(position);
+                Intent intent=new Intent(MainActivity.this,MessageActivity.class);
+                intent.putExtra("columnId_intent",column.getId());
+                intent.putExtra("username_intent",username_intent);
+                startActivity(intent);
+            }
+        });
     }
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
         switch (requestCode){
             case 1:
                 if (grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
                     sendRequestWithHttpURLConnection();
-                    showResponse();
                 }else {
                     Toast.makeText(MainActivity.this,"你拒绝了权限",Toast.LENGTH_SHORT).show();
                 }
@@ -197,7 +183,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendRequestWithHttpURLConnection() {
-        // 开启线程来发起网络请求
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -210,7 +195,6 @@ public class MainActivity extends AppCompatActivity {
                     connection.setConnectTimeout(8000);
                     connection.setReadTimeout(8000);
                     InputStream in = connection.getInputStream();
-                    // 下面对获取到的输入流进行读取
                     reader = new BufferedReader(new InputStreamReader(in));
                     StringBuilder response = new StringBuilder();
                     String line;
@@ -257,54 +241,110 @@ public class MainActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                // 在这里进行UI操作，将结果显示到界面上
                 RecyclerView recyclerView = findViewById(R.id.rev_main);
                 ColumnAdapter adapter = new ColumnAdapter(columnList);
                 recyclerView.setAdapter(adapter);
             }
         });
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 mydrawerLayout.openDrawer(GravityCompat.START);
                 break;
+            default:
         }
         return true;
     }
-    protected void onResume(){
-        super.onResume();
-        NavigationView navView=findViewById(R.id.nav_view);
-        navView.setCheckedItem(R.id.username_header);
-        View headerView = navView.getHeaderView(0);
-        ImageView user_image = headerView.findViewById(R.id.user_image);
-        TextView username_header=headerView.findViewById(R.id.username_header);
-        SQLiteDatabase sdb = dbHelper.getReadableDatabase();
-        Cursor cursor=sdb.query("user_table",null,null,null,null,null,null);
-        if (cursor.moveToFirst()) {
-            do {
-                String username=cursor.getString(cursor.getColumnIndex("username"));
-                String nickname=cursor.getString(cursor.getColumnIndex("nickname"));
-                String userimage=cursor.getString(cursor.getColumnIndex("user_image"));
-                if (username.equals(username_intent)){
-                    username_header.setText(nickname);
-                    Glide.with(this).load(userimage).asBitmap().placeholder(R.drawable.zhihu).error(R.drawable.zhihu).into(user_image);
-                    break;
+
+    public static class ItemClickSupport {
+        private final RecyclerView mRecyclerView;
+        private OnItemClickListener mOnItemClickListener;
+        private OnItemLongClickListener mOnItemLongClickListener;
+        private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mOnItemClickListener != null) {
+                    RecyclerView.ViewHolder holder = mRecyclerView.getChildViewHolder(v);
+                    mOnItemClickListener.onItemClicked(mRecyclerView, holder.getAdapterPosition(), v);
                 }
-            }while (cursor.moveToNext());
+            }
+        };
+        private View.OnLongClickListener mOnLongClickListener = new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (mOnItemLongClickListener != null) {
+                    RecyclerView.ViewHolder holder = mRecyclerView.getChildViewHolder(v);
+                    return mOnItemLongClickListener.onItemLongClicked(mRecyclerView, holder.getAdapterPosition(), v);
+                }
+                return false;
+            }
+        };
+        private RecyclerView.OnChildAttachStateChangeListener mAttachListener
+                = new RecyclerView.OnChildAttachStateChangeListener() {
+            @Override
+            public void onChildViewAttachedToWindow(View view) {
+                if (mOnItemClickListener != null) {
+                    view.setOnClickListener(mOnClickListener);
+                }
+                if (mOnItemLongClickListener != null) {
+                    view.setOnLongClickListener(mOnLongClickListener);
+                }
+            }
+
+            @Override
+            public void onChildViewDetachedFromWindow(View view) {
+
+            }
+        };
+
+        private ItemClickSupport(RecyclerView recyclerView) {
+            mRecyclerView = recyclerView;
+            mRecyclerView.setTag(R.id.item_click_support, this);
+            mRecyclerView.addOnChildAttachStateChangeListener(mAttachListener);
         }
-        cursor.close();
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode,Intent data){
-        switch (requestCode){
-            case 1:
-                if (requestCode==RESULT_OK){
-                    username_intent=data.getStringExtra("username_intent");
-                }
-                break;
-            default:
+
+        public static ItemClickSupport addTo(RecyclerView view) {
+            ItemClickSupport support = (ItemClickSupport) view.getTag(R.id.item_click_support);
+            if (support == null) {
+                support = new ItemClickSupport(view);
+            }
+            return support;
+        }
+
+        public static ItemClickSupport removeFrom(RecyclerView view) {
+            ItemClickSupport support = (ItemClickSupport) view.getTag(R.id.item_click_support);
+            if (support != null) {
+                support.detach(view);
+            }
+            return support;
+        }
+
+        public ItemClickSupport setOnItemClickListener(OnItemClickListener listener) {
+            mOnItemClickListener = listener;
+            return this;
+        }
+
+        public ItemClickSupport setOnItemLongClickListener(OnItemLongClickListener listener) {
+            mOnItemLongClickListener = listener;
+            return this;
+        }
+
+        private void detach(RecyclerView view) {
+            view.removeOnChildAttachStateChangeListener(mAttachListener);
+            view.setTag(R.id.item_click_support, null);
+        }
+
+        public interface OnItemClickListener {
+
+            void onItemClicked(RecyclerView recyclerView, int position, View v);
+        }
+
+        public interface OnItemLongClickListener {
+
+            boolean onItemLongClicked(RecyclerView recyclerView, int position, View v);
         }
     }
 }

@@ -17,11 +17,14 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String Collection="create table collection_table("
             +"id integer primary key autoincrement,"
-            +"url text)";
+            +"username text,"
+            +"collection_article text,"
+            +"collection_column text)";
 
     private static final String Like="create table like_table("
             +"id integer primary key autoincrement,"
-            +"like_id text)";
+            +"like_article text,"
+            +"like_column text)";
 
     MyDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
