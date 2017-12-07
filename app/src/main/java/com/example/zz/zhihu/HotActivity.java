@@ -1,7 +1,6 @@
 package com.example.zz.zhihu;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -29,38 +28,33 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessageActivity extends AppCompatActivity {
-    private List<Message> messageList = new ArrayList<>();
+public class HotActivity extends AppCompatActivity {
+    private List<Hot> hotList = new ArrayList<>();
     RecyclerView.LayoutManager recyclerViewlayoutManager;
-    private String columnId_intent;
-
     private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_message);
+        setContentView(R.layout.activity_hot);
 
-        Toolbar toolbar = findViewById(R.id.toolbar_message);
+        Toolbar toolbar = findViewById(R.id.toolbar_hot);
         setSupportActionBar(toolbar);
         toolbar.setTitle("");
         ActionBar actionBar=getSupportActionBar();
         if(actionBar!=null){
-            actionBar.setTitle("栏目详情");
+            actionBar.setTitle("");
         }
 
-        Intent intent=getIntent();
-        columnId_intent=intent.getStringExtra("columnId_intent");
-
-        RecyclerView recyclerView = findViewById(R.id.rev_message);
-        MessageAdapter adapter = new MessageAdapter(messageList);
+        RecyclerView recyclerView = findViewById(R.id.rev_hot);
+        HotAdapter adapter = new HotAdapter(hotList);
         recyclerView.setAdapter(adapter);
 
         recyclerViewlayoutManager = new LinearLayoutManager(this);
         GridLayoutManager layoutManager=new GridLayoutManager(this,1);
         recyclerView.setLayoutManager(layoutManager);
 
-        swipeRefreshLayout=findViewById(R.id.sre_message);
+        swipeRefreshLayout=findViewById(R.id.sre_hot);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,R.color.colorAccent,R.color.colorButton);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -70,15 +64,15 @@ public class MessageActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         swipeRefreshLayout.setRefreshing(false);
-                        messageList.clear();
+                        hotList.clear();
                         sendRequestWithHttpURLConnection();
                     }
                 }, 3000);
             }
         });
-        if (ContextCompat.checkSelfPermission(MessageActivity.this, Manifest.permission.INTERNET)!= PackageManager.PERMISSION_GRANTED)
+        if (ContextCompat.checkSelfPermission(HotActivity.this, Manifest.permission.INTERNET)!= PackageManager.PERMISSION_GRANTED)
         {
-            ActivityCompat.requestPermissions(MessageActivity.this,new String[]{Manifest.permission.INTERNET},1);
+            ActivityCompat.requestPermissions(HotActivity.this,new String[]{Manifest.permission.INTERNET},1);
         } else{
             sendRequestWithHttpURLConnection();
         }
@@ -90,7 +84,7 @@ public class MessageActivity extends AppCompatActivity {
                 if (grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
                     sendRequestWithHttpURLConnection();
                 }else {
-                    Toast.makeText(MessageActivity.this,"你拒绝了权限",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(HotActivity.this,"你拒绝了权限",Toast.LENGTH_SHORT).show();
                 }
                 break;
             default:
@@ -105,7 +99,7 @@ public class MessageActivity extends AppCompatActivity {
                 HttpURLConnection connection = null;
                 BufferedReader reader = null;
                 try {
-                    URL url = new URL("http://news-at.zhihu.com/api/3/section/"+columnId_intent);
+                    URL url = new URL("https://news-at.zhihu.com/api/3/news/hot");
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
                     connection.setConnectTimeout(8000);
@@ -138,26 +132,17 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     private void parseJSONWithJSONObject(String data) {
-        String images = null;
         try {
             JSONObject jsonObject=new JSONObject(data);
-            String timestamp=jsonObject.getString("timestamp");
-            JSONArray jsonArray=jsonObject.getJSONArray("stories");
+            JSONArray jsonArray=jsonObject.getJSONArray("recent");
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject1 = (JSONObject)jsonArray.get(i);
-                JSONArray jsonArray1=jsonObject1.getJSONArray("images");
-                for (int j=0;j<jsonArray1.length();j++) {
-                    images=jsonArray1.getString(j);
-                }
-                String date=jsonObject1.getString("date");
-                String display_date = jsonObject1.getString("display_date");
-                String id = jsonObject1.getString("id");
+                String news_id = jsonObject1.getString("news_id");
                 String title = jsonObject1.getString("title");
-
-                messageList.add(new Message(title,id,display_date,images));
-
+                String thumbnail=jsonObject1.getString("thumbnail");
+                String url=jsonObject1.getString("url");
+                hotList.add(new Hot(title,news_id,thumbnail,url));
             }
-            String name=jsonObject.getString("name");
             showResponse();
         } catch (Exception e) {
             e.printStackTrace();
@@ -168,8 +153,8 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void run() {
                 // 在这里进行UI操作，将结果显示到界面上
-                RecyclerView recyclerView = findViewById(R.id.rev_message);
-                MessageAdapter adapter = new MessageAdapter(messageList);
+                RecyclerView recyclerView = findViewById(R.id.rev_hot);
+                HotAdapter adapter = new HotAdapter(hotList);
                 recyclerView.setAdapter(adapter);
             }
         });

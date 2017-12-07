@@ -57,5 +57,3 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         return mMessageList.size();
     }
 }
-
-

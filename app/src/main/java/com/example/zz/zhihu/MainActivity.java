@@ -1,6 +1,7 @@
 package com.example.zz.zhihu;
 
 import android.Manifest;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private MyDatabaseHelper dbHelper;
     private ColumnAdapter ColumnAdapter;
     private String username_intent;
+    private boolean like=false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,8 +102,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
-                    case R.id.nav_person:
-                        Intent intent=new Intent(MainActivity.this,PersonActivity.class);
+                    case R.id.nav_index:
+                        Intent intent=new Intent(MainActivity.this,IndexActivity.class);
                         intent.putExtra("username_intent",username_intent);
                         startActivity(intent);
                         finish();
@@ -117,6 +120,10 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.nav_collection:
                         Intent intent3=new Intent(MainActivity.this,CollectionActivity.class);
                         startActivity(intent3);
+                        break;
+                    case R.id.nav_hot:
+                        Intent intent4=new Intent(MainActivity.this,HotActivity.class);
+                        startActivity(intent4);
                         break;
                 }
                 mydrawerLayout.closeDrawers();
@@ -151,6 +158,29 @@ public class MainActivity extends AppCompatActivity {
             sendRequestWithHttpURLConnection();
         }
         recyclerView.setAdapter(ColumnAdapter);
+
+        ImageView columnLike=findViewById(R.id.column_like);
+        /*if (columnLike.getDrawable().getCurrent().getConstantState()==(getResources().getDrawable(R.drawable.like1).getConstantState())){
+            like=true;
+        }
+        if (!like){
+            Glide.with(this).load(R.drawable.like1).asBitmap().into(columnLike);
+            like=true;
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put("like_id",Column.getId());
+            db.insert("like_table", null, values);
+            values.clear();
+            db.close();
+        }
+        else {
+            Glide.with(this).load(R.drawable.like0).asBitmap().into(columnLike);
+            like=false;
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            db.delete("like_table", "like_id=?",new String[]{Column.getId()});
+            db.close();
+        }*/
+
     }
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
         switch (requestCode){

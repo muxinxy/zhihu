@@ -12,7 +12,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             + "nickname text,"
             + "username text,"
             + "password text,"
-            + "tel integer,"
+            + "signature text,"
             + "sex text)";
 
     private static final String Collection="create table collection_table("

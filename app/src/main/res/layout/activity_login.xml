@@ -43,9 +43,11 @@
                     android:layout_width="200sp"
                     android:layout_height="45sp"
                     android:id="@+id/login_username"
+                    android:digits="0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
                     android:inputType="textEmailSubject"
+                    tools:ignore="LabelFor"
                     android:maxLength="15"
-                    tools:ignore="LabelFor"/>
+                    android:hint="1-15位 仅限字母数字"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -64,6 +66,7 @@
                     android:id="@+id/login_passward"
                     android:inputType="textPassword"
                     android:maxLength="15"
+                    android:hint="1-15位"
                     tools:ignore="LabelFor" />
             </LinearLayout>
             <LinearLayout
@@ -79,7 +82,7 @@
                     android:layout_gravity="center"
                     android:id="@+id/login"
                     android:text="登录"
-                    android:background="@color/colorButton"
+                    android:background="@drawable/shape"
                     style="?android:buttonBarButtonStyle"
                     tools:ignore="NestedWeights" />
                 <Button
@@ -89,7 +92,7 @@
                     android:layout_gravity="center"
                     android:id="@+id/signup"
                     android:text="注册"
-                    android:background="@color/colorButton"
+                    android:background="@drawable/shape"
                     android:layout_marginTop="10dp"
                     style="?android:buttonBarButtonStyle"/>
             </LinearLayout>

@@ -1,19 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.zz.zhihu.PersonActivity">
+    tools:context="com.example.zz.zhihu.IndexActivity">
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:src="@drawable/change"
+        app:backgroundTint="@color/colorButton"
+        android:layout_gravity="bottom|end"
+        app:borderWidth="0dp"
+        app:elevation="6dp"
+        app:fabSize="normal"
+        app:pressedTranslationZ="12dp"
+        app:rippleColor="#a6a6a6" />
+
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_person"
+        android:id="@+id/toolbar_index"
         android:layout_height="?attr/actionBarSize"
         android:layout_width="match_parent"
         android:background="@color/colorPrimary">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="修改个人资料"
+            android:text="个人主页"
             android:textColor="#ffffff"
             android:textSize="24sp"
             android:layout_gravity="center"/>
@@ -37,14 +54,9 @@
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="70sp"
                 android:layout_height="70sp"
-                android:id="@+id/head_person"
+                android:id="@+id/head_index"
                 android:scaleType="centerCrop"/>
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="更改头像"
-                android:background="@drawable/shape"
-                android:id="@+id/change_user_image"/>
+
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -57,13 +69,14 @@
                 android:gravity="center"
                 android:layout_height="wrap_content"
                 android:text="昵称"/>
-            <EditText
+            <TextView
                 android:layout_width="0sp"
                 android:layout_weight="3"
                 android:layout_height="wrap_content"
-                android:id="@+id/person_nickname"
-                android:maxLength="10"
-                android:hint="1-10位"/>
+                android:textSize="20sp"
+                android:textColor="#000000"
+                android:text="nickname"
+                android:id="@+id/index_nickname"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -80,7 +93,7 @@
                 android:layout_width="0sp"
                 android:layout_weight="3"
                 android:layout_height="wrap_content"
-                android:id="@+id/person_username"
+                android:id="@+id/index_username"
                 android:textSize="20sp"
                 android:textColor="#000000"
                 android:text="username"/>
@@ -95,14 +108,15 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:layout_height="wrap_content"
-                android:text="个性签名" />
-            <EditText
+                android:text="性别"/>
+            <TextView
                 android:layout_width="0sp"
                 android:layout_weight="3"
                 android:layout_height="wrap_content"
-                android:id="@+id/person_signature"
-                android:maxLength="30"
-                android:hint="0-30位"/>
+                android:text="男"
+                android:id="@+id/index_sex"
+                android:textSize="20sp"
+                android:textColor="#000000"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -114,41 +128,30 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:layout_height="wrap_content"
-                android:text="性别"/>
-            <RadioGroup
-                android:id="@+id/radioGroup"
+                android:text="个性签名" />
+            <TextView
                 android:layout_width="0sp"
                 android:layout_weight="3"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <RadioButton
-                    android:id="@+id/btnMan"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="男"
-                    android:checked="true"/>
-
-                <RadioButton
-                    android:id="@+id/btnWoman"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="女"/>
-            </RadioGroup>
+                android:id="@+id/index_signature"
+                android:text="signature"
+                android:textSize="20sp"
+                android:textColor="#000000"/>
         </LinearLayout>
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="修改"
+            android:text="喜爱专栏"
             android:background="@drawable/shape"
-            android:id="@+id/person_yes"
+            android:id="@+id/index_like_column"
             android:layout_marginTop="10dp"/>
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="取消"
+            android:text="喜爱文章"
             android:background="@drawable/shape"
-            android:id="@+id/person_no"
+            android:id="@+id/index_like_article"
             android:layout_marginTop="10dp"/>
     </LinearLayout>
-</android.support.constraint.ConstraintLayout>
+</FrameLayout>
+</android.support.design.widget.CoordinatorLayout>

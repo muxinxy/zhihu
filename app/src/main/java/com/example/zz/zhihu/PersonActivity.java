@@ -9,8 +9,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.DocumentsContract;
@@ -32,14 +30,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 public class PersonActivity extends AppCompatActivity {
     private String sex;
     private SQLiteOpenHelper dbHelper;
     private String imagePath;
     public static final int CHOOSE_PHOTO=2;
-    private String username_intent;
     private boolean set_user_image=false;
 
     @Override
@@ -53,7 +48,7 @@ public class PersonActivity extends AppCompatActivity {
         Button person_yes=findViewById(R.id.person_yes);
         Button person_no=findViewById(R.id.person_no);
         final EditText person_nickname=findViewById(R.id.person_nickname);
-        final EditText person_tel=findViewById(R.id.person_tel);
+        final EditText person_signature=findViewById(R.id.person_signature);
         final TextView person_username=findViewById(R.id.person_username);
         final ImageView person_head=findViewById(R.id.head_person);
         final RadioGroup radioGroup = findViewById(R.id.radioGroup);
@@ -68,13 +63,12 @@ public class PersonActivity extends AppCompatActivity {
                 String username=cursor.getString(cursor.getColumnIndex("username"));
                 String nickname=cursor.getString(cursor.getColumnIndex("nickname"));
                 String header=cursor.getString(cursor.getColumnIndex("user_image"));
-                int tel=cursor.getInt(cursor.getColumnIndex("tel"));
+                String signature=cursor.getString(cursor.getColumnIndex("signature"));
                 String sex=cursor.getString(cursor.getColumnIndex("sex"));
                 if (username.equals(username_intent)){
                     person_username.setText(username);
                     person_nickname.setText(nickname);
-                    String telphone=Integer.toString(tel);
-                    person_tel.setText(telphone);
+                    person_signature.setText(signature);
                     if(sex.equals("m"))btnMan.setChecked(true);
                     else btnWoman.setChecked(true);
                     Glide.with(this).load(header).asBitmap().placeholder(R.drawable.zhihu).error(R.drawable.zhihu).into(person_head);
@@ -110,14 +104,14 @@ public class PersonActivity extends AppCompatActivity {
                     SQLiteDatabase sdb = dbHelper.getWritableDatabase();
                     ContentValues values = new ContentValues();
                     values.put("nickname", person_nickname.getText().toString().trim());
-                    values.put("tel", person_tel.getText().toString().trim());
+                    values.put("signature", person_signature.getText().toString().trim());
                     values.put("sex", sex);
                     if(set_user_image)
                     values.put("user_image", imagePath);
                     sdb.update("user_table" ,values, "username=?",new String[]{person_username.getText().toString()});
                     values.clear();
                     Toast.makeText(PersonActivity.this, "修改成功", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(PersonActivity.this,MainActivity.class);
+                    Intent intent = new Intent(PersonActivity.this,IndexActivity.class);
                     intent.putExtra("username_intent",person_username.getText().toString().trim());
                     startActivity(intent);
                     finish();
@@ -138,8 +132,9 @@ public class PersonActivity extends AppCompatActivity {
                 Cursor cursor=sdb.query("user_table",null,null,null,null,null,null);
                 if (cursor.moveToFirst()) {
                     do {
+                        String username=cursor.getString(cursor.getColumnIndex("username"));
                         String nickname=cursor.getString(cursor.getColumnIndex("nickname"));
-                        if (nickname.equals(person_nickname.getText().toString().trim())){
+                        if (!username.equals(username_intent)&&nickname.equals(person_nickname.getText().toString().trim())){
                             Toast.makeText(PersonActivity.this,"昵称已存在",Toast.LENGTH_SHORT).show();
                             return true;
                         }
@@ -152,7 +147,7 @@ public class PersonActivity extends AppCompatActivity {
         person_no.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent =new Intent(PersonActivity.this,MainActivity.class);
+                Intent intent =new Intent(PersonActivity.this,IndexActivity.class);
                 intent.putExtra("username_intent",username_intent);
                 startActivity(intent);
                 finish();
@@ -181,14 +176,16 @@ public class PersonActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case CHOOSE_PHOTO:
-                if (resultCode == RESULT_OK) {
-                    // 判断手机系统版本号
-                    if (Build.VERSION.SDK_INT>=19)
-                        // 4.4及以上系统使用这个方法处理图片
-                        handleImageOnKitKat(data);
-                }else {
-                    //4.4以下系统使用这个方法处理图片
-                    handleImageBeforeKitKat(data);
+                if (resultCode != PersonActivity.RESULT_CANCELED&&data!=null) {
+                    if (resultCode == RESULT_OK) {
+                        // 判断手机系统版本号
+                        if (Build.VERSION.SDK_INT>=19)
+                            // 4.4及以上系统使用这个方法处理图片
+                            handleImageOnKitKat(data);
+                    }else {
+                        //4.4以下系统使用这个方法处理图片
+                        handleImageBeforeKitKat(data);
+                    }
                 }
                 break;
             default:
@@ -260,7 +257,7 @@ public class PersonActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         TextView username=findViewById(R.id.person_username);
-        Intent intent =new Intent(PersonActivity.this,MainActivity.class);
+        Intent intent =new Intent(PersonActivity.this,IndexActivity.class);
         intent.putExtra("username_intent",username.getText().toString());
         startActivity(intent);
         finish();

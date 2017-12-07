@@ -43,7 +43,9 @@
                     android:layout_height="45sp"
                     android:id="@+id/sign_nickname"
                     android:inputType="textEmailSubject"
-                    tools:ignore="LabelFor"/>
+                    tools:ignore="LabelFor"
+                    android:maxLength="10"
+                    android:hint="1-10位"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -59,8 +61,10 @@
                     android:layout_width="200sp"
                     android:layout_height="45sp"
                     android:id="@+id/sign_username"
-                    android:inputType="textEmailSubject"
-                    tools:ignore="LabelFor"/>
+                    android:digits="0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    tools:ignore="LabelFor"
+                    android:maxLength="15"
+                    android:hint="1-15位 仅限字母数字" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -78,7 +82,9 @@
                     android:layout_height="45sp"
                     android:id="@+id/sign_password"
                     android:inputType="textPassword"
-                    tools:ignore="LabelFor" />
+                    tools:ignore="LabelFor"
+                    android:maxLength="15"
+                    android:hint="1-15位"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -96,7 +102,9 @@
                     android:layout_height="45sp"
                     android:id="@+id/re_sign_password"
                     android:inputType="textPassword"
-                    tools:ignore="LabelFor" />
+                    tools:ignore="LabelFor"
+                    android:maxLength="15"
+                    android:hint="1-15位"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -111,7 +119,7 @@
                     android:layout_gravity="center"
                     android:id="@+id/sign_yes"
                     android:text="马上注册"
-                    android:background="@color/colorButton"
+                    android:background="@drawable/shape"
                     style="?android:buttonBarButtonStyle"
                     tools:ignore="NestedWeights" />
                 <Button
@@ -121,7 +129,7 @@
                     android:layout_gravity="center"
                     android:id="@+id/sign_no"
                     android:text="返回登录"
-                    android:background="@color/colorButton"
+                    android:background="@drawable/shape"
                     android:layout_marginTop="10dp"
                     style="?android:buttonBarButtonStyle"/>
             </LinearLayout>
