@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         dbHelper.getWritableDatabase();
 
         Intent intent=getIntent();
-        final String username_intent=intent.getStringExtra("username_intent");
+        username_intent=intent.getStringExtra("username_intent");
 
         RecyclerView recyclerView = findViewById(R.id.rev_main);
         ColumnAdapter=new ColumnAdapter(columnList);
@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
             }while (cursor.moveToNext());
         }
         cursor.close();
+        sdb.close();
         navView.setCheckedItem(R.id.username_header);
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -123,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_hot:
                         Intent intent4=new Intent(MainActivity.this,HotActivity.class);
+                        intent4.putExtra("username_intent",username_intent);
                         startActivity(intent4);
                         break;
                 }
@@ -165,6 +167,10 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent=new Intent(MainActivity.this,MessageActivity.class);
                 intent.putExtra("columnId_intent",column.getId());
                 intent.putExtra("username_intent",username_intent);
+                intent.putExtra("columnName_intent",column.getName());
+                intent.putExtra("columnDescription_intent",column.getDescription());
+                intent.putExtra("columnThumbnail_intent",column.getThumbnail());
+                intent.putExtra("main","main");
                 startActivity(intent);
             }
         });

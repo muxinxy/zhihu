@@ -43,7 +43,9 @@
         <activity android:name=".HotActivity" />
         <activity android:name=".LikeColumnActivity" />
         <activity android:name=".LikeArticleActivity" />
-        <activity android:name=".ArticleActivity"></activity>
+        <activity android:name=".ArticleActivity" />
+        <activity android:name=".LongCommitsActivity" />
+        <activity android:name=".ShortCommitsActivity"></activity>
     </application>
 
 </manifest>

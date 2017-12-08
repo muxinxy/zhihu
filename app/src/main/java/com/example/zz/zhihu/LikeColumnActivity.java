@@ -49,11 +49,27 @@ public class LikeColumnActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_like_column);
 
+        Intent intent=getIntent();
+        username_intent=intent.getStringExtra("username_intent");
+
         dbHelper =new MyDatabaseHelper(this,"data.db",null,1) ;
         dbHelper.getWritableDatabase();
-
-        Intent intent=getIntent();
-        final String username_intent=intent.getStringExtra("username_intent");
+        SQLiteDatabase sdb = dbHelper.getReadableDatabase();
+        Cursor cursor=sdb.query("like_column_table",null,null,null,null,null,null);
+        if (cursor.moveToFirst()) {
+            do {
+                String username=cursor.getString(cursor.getColumnIndex("username"));
+                String column_id=cursor.getString(cursor.getColumnIndex("column_id"));
+                String name=cursor.getString(cursor.getColumnIndex("name"));
+                String description=cursor.getString(cursor.getColumnIndex("description"));
+                String thumbnail=cursor.getString(cursor.getColumnIndex("thumbnail"));
+                if (username.equals(username_intent)){
+                    like_columnList.add(new LikeColumn(name,column_id,description,thumbnail));
+                }
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
+        sdb.close();
 
         RecyclerView recyclerView = findViewById(R.id.rev_like_column);
         LikeColumnAdapter=new LikeColumnAdapter(like_columnList);
@@ -79,7 +95,7 @@ public class LikeColumnActivity extends AppCompatActivity {
                     public void run() {
                         swipeRefreshLayout.setRefreshing(false);
                         like_columnList.clear();
-                        sendRequestWithHttpURLConnection();
+                        showResponse();
                     }
                 }, 3000);
             }
@@ -88,7 +104,7 @@ public class LikeColumnActivity extends AppCompatActivity {
         {
             ActivityCompat.requestPermissions(LikeColumnActivity.this,new String[]{Manifest.permission.INTERNET},1);
         } else{
-            sendRequestWithHttpURLConnection();
+            showResponse();
         }
         recyclerView.setAdapter(LikeColumnAdapter);
         LikeColumnActivity.ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new LikeColumnActivity.ItemClickSupport.OnItemClickListener() {
@@ -98,92 +114,16 @@ public class LikeColumnActivity extends AppCompatActivity {
                 Intent intent=new Intent(LikeColumnActivity.this,MessageActivity.class);
                 intent.putExtra("like_columnId_intent",like_column.getId());
                 intent.putExtra("username_intent",username_intent);
+                intent.putExtra("columnName_intent",like_column.getName());
+                intent.putExtra("columnDescription_intent",like_column.getDescription());
+                intent.putExtra("columnThumbnail_intent",like_column.getThumbnail());
+                intent.putExtra("main","like");
                 startActivity(intent);
+                finish();
             }
         });
     }
 
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
-        switch (requestCode){
-            case 1:
-                if (grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                    sendRequestWithHttpURLConnection();
-                }else {
-                    Toast.makeText(LikeColumnActivity.this,"你拒绝了权限",Toast.LENGTH_SHORT).show();
-                }
-                break;
-            default:
-        }
-    }
-
-    private void sendRequestWithHttpURLConnection() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                HttpURLConnection connection = null;
-                BufferedReader reader = null;
-                try {
-                    URL url = new URL("http://news-at.zhihu.com/api/3/sections");
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestMethod("GET");
-                    connection.setConnectTimeout(8000);
-                    connection.setReadTimeout(8000);
-                    InputStream in = connection.getInputStream();
-                    reader = new BufferedReader(new InputStreamReader(in));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    parseJSONWithJSONObject(response.toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    if (reader != null) {
-                        try {
-                            reader.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    if (connection != null) {
-                        connection.disconnect();
-                    }
-                }
-            }
-        }).start();
-    }
-
-    private void parseJSONWithJSONObject(String data) {
-        try {
-            JSONObject jsonObject=new JSONObject(data);
-            JSONArray jsonArray=jsonObject.getJSONArray("data");
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject1 = (JSONObject)jsonArray.get(i);
-                String id = jsonObject1.getString("id");
-                String name = jsonObject1.getString("name");
-                String description = jsonObject1.getString("description");
-                String thumbnail=jsonObject1.getString("thumbnail");
-
-                SQLiteDatabase sdb = dbHelper.getReadableDatabase();
-                Cursor cursor=sdb.query("collection_table",null,null,null,null,null,null);
-                if (cursor.moveToFirst()) {
-                    do {
-                        String username=cursor.getString(cursor.getColumnIndex("username"));
-                        String like_column=cursor.getString(cursor.getColumnIndex("collection_column"));
-                        if (username.equals(username_intent)&&("http://news-at.zhihu.com/api/3/sections/"+id).equals(like_column)){
-                            like_columnList.add(new LikeColumn(name,id,description,thumbnail));
-                        }
-                    }while (cursor.moveToNext());
-                }
-                cursor.close();
-                sdb.close();
-            }
-            showResponse();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
     private void showResponse() {
         runOnUiThread(new Runnable() {
             @Override
