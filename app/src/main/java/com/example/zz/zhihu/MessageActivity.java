@@ -166,7 +166,6 @@ public class MessageActivity extends AppCompatActivity {
                     connection.setConnectTimeout(8000);
                     connection.setReadTimeout(8000);
                     InputStream in = connection.getInputStream();
-                    // 下面对获取到的输入流进行读取
                     reader = new BufferedReader(new InputStreamReader(in));
                     StringBuilder response = new StringBuilder();
                     String line;
@@ -222,7 +221,6 @@ public class MessageActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                // 在这里进行UI操作，将结果显示到界面上
                 RecyclerView recyclerView = findViewById(R.id.rev_message);
                 MessageAdapter adapter = new MessageAdapter(messageList);
                 recyclerView.setAdapter(adapter);
@@ -272,7 +270,6 @@ public class MessageActivity extends AppCompatActivity {
         return true;
     }
     public void onBackPressed() {
-        TextView username=findViewById(R.id.index_username);
         Intent intent1 =new Intent(MessageActivity.this,MainActivity.class);
         intent1.putExtra("username_intent",username_intent);
         Intent intent2=new Intent(MessageActivity.this,LikeColumnActivity.class);

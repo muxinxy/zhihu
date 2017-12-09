@@ -118,10 +118,6 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent1);
                         finish();
                         break;
-                    case R.id.nav_collection:
-                        Intent intent3=new Intent(MainActivity.this,CollectionActivity.class);
-                        startActivity(intent3);
-                        break;
                     case R.id.nav_hot:
                         Intent intent4=new Intent(MainActivity.this,HotActivity.class);
                         intent4.putExtra("username_intent",username_intent);

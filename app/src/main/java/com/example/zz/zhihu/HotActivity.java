@@ -88,10 +88,12 @@ public class HotActivity extends AppCompatActivity {
                 Intent intent=new Intent(HotActivity.this,ArticleActivity.class);
                 intent.putExtra("Title_intent",hot.getTitle());
                 intent.putExtra("username_intent",username_intent);
-                intent.putExtra("News_id_intent",hot.getNews_id());
+                intent.putExtra("NewsId_intent",hot.getNews_id());
                 intent.putExtra("Url_intent",hot.getUrl());
                 intent.putExtra("Thumbnail_intent",hot.getThumbnail());
+                intent.putExtra("hot","hot");
                 startActivity(intent);
+                finish();
             }
         });
     }
@@ -110,7 +112,6 @@ public class HotActivity extends AppCompatActivity {
     }
 
     private void sendRequestWithHttpURLConnection() {
-        // 开启线程来发起网络请求
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -123,7 +124,6 @@ public class HotActivity extends AppCompatActivity {
                     connection.setConnectTimeout(8000);
                     connection.setReadTimeout(8000);
                     InputStream in = connection.getInputStream();
-                    // 下面对获取到的输入流进行读取
                     reader = new BufferedReader(new InputStreamReader(in));
                     StringBuilder response = new StringBuilder();
                     String line;
@@ -170,7 +170,6 @@ public class HotActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                // 在这里进行UI操作，将结果显示到界面上
                 RecyclerView recyclerView = findViewById(R.id.rev_hot);
                 HotAdapter adapter = new HotAdapter(hotList);
                 recyclerView.setAdapter(adapter);

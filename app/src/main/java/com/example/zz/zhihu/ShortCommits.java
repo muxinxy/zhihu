@@ -1,6 +1,6 @@
 package com.example.zz.zhihu;
 
-public class LongCommits {
+public class ShortCommits {
     String author;
     String id;
     String content;
@@ -13,7 +13,7 @@ public class LongCommits {
     String reply_author;
     String reply_err_msg;
     String JsonLength;
-    public LongCommits(String author,String id,String content,String avatar,String likes,String time,String reply_content,String reply_status,String reply_id,String reply_author,String reply_err_msg,String JsonLength){
+    public ShortCommits(String author,String id,String content,String avatar,String likes,String time,String reply_content,String reply_status,String reply_id,String reply_author,String reply_err_msg,String JsonLength){
         this.author=author;
         this.id=id;
         this.content=content;

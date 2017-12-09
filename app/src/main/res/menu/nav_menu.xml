@@ -8,15 +8,11 @@
         <item
             android:id="@+id/nav_column"
             android:icon="@drawable/column"
-            android:title="栏目总览"/>
+            android:title="*栏目总览"/>
         <item
             android:id="@+id/nav_hot"
             android:icon="@drawable/hot"
             android:title="热门消息"/>
-        <item
-            android:id="@+id/nav_collection"
-            android:icon="@drawable/collection"
-            android:title="我的收藏"/>
     </group>
     <item android:title="其他">
         <menu>

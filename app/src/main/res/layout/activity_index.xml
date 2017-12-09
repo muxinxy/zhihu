@@ -141,14 +141,14 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="喜爱专栏"
+            android:text="专栏收藏"
             android:background="@drawable/shape"
             android:id="@+id/index_like_column"
             android:layout_marginTop="10dp"/>
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="喜爱文章"
+            android:text="文章收藏"
             android:background="@drawable/shape"
             android:id="@+id/index_like_article"
             android:layout_marginTop="10dp"/>
