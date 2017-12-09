@@ -4,55 +4,50 @@
 
 api来源为[知乎日报api分析][zhihu_api]
 
-## 活动
+## 功能
 
-### 1.MainActivity  
->13. 栏目总览  
->请注意！ 此 API 仍可访问，但是其内容未出现在最新的『知乎日报』 App 中。  
->URL: http://news-at.zhihu.com/api/3/sections  
->响应实例:  
-*  
-      {  
-        data: [  
-           {  
-                id: 1,  
-                thumbnail: "http://p2.zhimg.com/10/b8/10b8193dd6a3404d31b2c50e1e232c87.jpg",  
-                name: "深夜食堂",  
-                description: "睡前宵夜，用别人的故事下酒"  
-           },  
-       ...  
-              ]  
-      } 
+### 1.登录注册 
+* 输入框限制位数和输入字符
+* 圆角按钮
+* 标题栏文字居中
+* 增加提示文字
 
->同样，注意使用 thumbnail 获取图像的地址
+### 2.栏目总览
+* 滑动菜单
+* 卡片式布局
+* 标题栏文字居中
 
-### 2.MessageActivity  
->14. 栏目具体消息查看  
->请注意！ 此 API 仍可访问，但是其内容未出现在最新的『知乎日报』 App 中。  
->URL: http://news-at.zhihu.com/api/3/section/1  
->URL 最后的数字见『栏目总览』中相应栏目的 id 属性  
->响应实例：  
-*  
-      {  
-        news: [  
-            {  
-                date: "20140522",  
-                display_date: "5 月 22 日"  
-            },  
-        ...  
-              ],  
-        name: "深夜食堂",  
-        timestamp: 1398780001  
-      } 
+### 3.栏目具体消息查看
+* 卡片式布局
+* 右上角菜单
 
->往前：http://news-at.zhihu.com/api/3/section/1/before/1398780001  
->在 URL 最后加上一个时间戳，时间戳详见 JSON 数据末端的 timestamp 属性
+### 4.个人主页
+* 个人资料展示
+* 个人资料修改
+* 悬浮按钮
+* 圆角按钮
+* 喜爱文章
+* 喜爱专栏
+
+### 5.喜爱文章
+* 卡片式布局
+
+### 6.热门消息
+* 卡片式布局
 
 *  *  *  *
 ## 控件
 
 ### 下拉刷新  
 *swipelayout*
+### 滑动菜单
+*drawerlayout*
+*NavigationView*
+### 卡片式布局
+*cardview*
+*recyclerview*
+### 悬浮按钮
+*FloatingActionButton*
 
 *  *  *  *
 
