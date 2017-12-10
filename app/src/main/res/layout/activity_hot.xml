@@ -5,15 +5,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
-
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:src="@drawable/top"
+        app:backgroundTint="@color/colorButton"
+        android:layout_gravity="bottom|end"
+        app:borderWidth="0dp"
+        app:elevation="6dp"
+        app:fabSize="normal"
+        app:pressedTranslationZ="12dp"
+        app:rippleColor="#a6a6a6" />
         <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <android.support.design.widget.AppBarLayout
+            <android.support.v4.widget.SwipeRefreshLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
+                android:layout_height="match_parent"
+                android:id="@+id/sre_hot"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rev_hot"
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                    android:clipToPadding="false"
+                    android:paddingTop="?attr/actionBarSize"/>
+            </android.support.v4.widget.SwipeRefreshLayout>
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar_hot"
                     android:layout_height="?attr/actionBarSize"
@@ -30,19 +53,6 @@
                         android:layout_gravity="center"/>
                 </android.support.v7.widget.Toolbar>
 
-
-
-            </android.support.design.widget.AppBarLayout>
-            <android.support.v4.widget.SwipeRefreshLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/sre_hot"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior">
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rev_hot"
-                    android:layout_height="match_parent"
-                    android:layout_width="match_parent"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-            </android.support.v4.widget.SwipeRefreshLayout>
         </android.support.design.widget.CoordinatorLayout>
+    </FrameLayout>
 </RelativeLayout>

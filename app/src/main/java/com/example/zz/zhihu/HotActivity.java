@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -16,6 +17,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -35,14 +39,19 @@ public class HotActivity extends AppCompatActivity {
     RecyclerView.LayoutManager recyclerViewlayoutManager;
     private SwipeRefreshLayout swipeRefreshLayout;
     private String username_intent;
+    private Toolbar toolbar;
+    private FloatingActionButton top;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hot);
+
+        top=findViewById(R.id.top);
+
         Intent intent=getIntent();
         username_intent=intent.getStringExtra("username_intent");
-        Toolbar toolbar = findViewById(R.id.toolbar_hot);
+        toolbar = findViewById(R.id.toolbar_hot);
         setSupportActionBar(toolbar);
         toolbar.setTitle("");
         ActionBar actionBar=getSupportActionBar();
@@ -50,9 +59,20 @@ public class HotActivity extends AppCompatActivity {
             actionBar.setTitle("");
         }
 
-        RecyclerView recyclerView = findViewById(R.id.rev_hot);
+        final RecyclerView recyclerView = findViewById(R.id.rev_hot);
         HotAdapter adapter = new HotAdapter(hotList);
         recyclerView.setAdapter(adapter);
+        //noinspection deprecation
+        recyclerView.setOnScrollListener(new HidingScrollListener() {
+            @Override
+            public void onHide() {
+                hideViews();
+            }
+            @Override
+            public void onShow() {
+                showViews();
+            }
+        });
 
         recyclerViewlayoutManager = new LinearLayoutManager(this);
         GridLayoutManager layoutManager=new GridLayoutManager(this,1);
@@ -94,6 +114,13 @@ public class HotActivity extends AppCompatActivity {
                 intent.putExtra("hot","hot");
                 startActivity(intent);
                 finish();
+            }
+        });
+
+        top.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerView.smoothScrollToPosition(0);
             }
         });
     }
@@ -264,5 +291,41 @@ public class HotActivity extends AppCompatActivity {
 
             boolean onItemLongClicked(RecyclerView recyclerView, int position, View v);
         }
+    }
+
+    public abstract class HidingScrollListener extends RecyclerView.OnScrollListener {
+        private static final int HIDE_THRESHOLD = 20;
+        private int scrolledDistance = 0;
+        private boolean controlsVisible = true;
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            if (scrolledDistance > HIDE_THRESHOLD && controlsVisible) {
+                onHide();
+                controlsVisible = false;
+                scrolledDistance = 0;
+            } else if (scrolledDistance < -HIDE_THRESHOLD && !controlsVisible) {
+                onShow();
+                controlsVisible = true;
+                scrolledDistance = 0;
+            }
+            if((controlsVisible && dy>0) || (!controlsVisible && dy<0)) {
+                scrolledDistance += dy;
+            }
+        }
+        public abstract void onHide();
+        public abstract void onShow();
+
+    }
+    private void hideViews() {
+        toolbar.animate().translationY(-toolbar.getHeight()).setInterpolator(new AccelerateInterpolator(2));
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) top.getLayoutParams();
+        int fabBottomMargin = lp.bottomMargin;
+        top.animate().translationY(top.getHeight()+fabBottomMargin).setInterpolator(new AccelerateInterpolator(2)).start();
+    }
+
+    private void showViews() {
+        toolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
+        top.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
     }
 }

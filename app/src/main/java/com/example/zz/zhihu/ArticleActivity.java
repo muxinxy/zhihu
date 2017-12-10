@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -17,6 +18,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
@@ -54,6 +56,22 @@ public class ArticleActivity extends AppCompatActivity {
         web_article.getSettings().setJavaScriptEnabled(true);
         web_article.setWebViewClient(new WebViewClient());
         web_article.getSettings().setSupportZoom(false);
+        web_article.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        web_article.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING);
+        web_article.getSettings().setLoadWithOverviewMode(true);
+        web_article.getSettings().setUseWideViewPort(true);
+        web_article.getSettings().setDomStorageEnabled(true);
+        web_article.getSettings().setAllowFileAccessFromFileURLs(true);
+        web_article.getSettings().setAllowUniversalAccessFromFileURLs(true);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+        {
+            web_article.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING);
+        }
+        else
+        {
+            web_article.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
+        }
 
         Toolbar toolbar = findViewById(R.id.toolbar_article);
         setSupportActionBar(toolbar);
@@ -114,6 +132,10 @@ public class ArticleActivity extends AppCompatActivity {
         }
         cursor.close();
         sdb.close();
+    }
+    private String getHtmlData(String bodyHTML) {
+        String head = "<head><style>img{max-width: 100%; width:auto; height: auto;}</style></head>";
+        return "<html>" + head + "<body>" + bodyHTML + "</body></html>";
     }
     private void sendRequestWithHttpURLConnection() {
         new Thread(new Runnable() {
@@ -269,7 +291,7 @@ public class ArticleActivity extends AppCompatActivity {
         web_article.post(new Runnable() {
             @Override
             public void run() {
-                web_article.loadDataWithBaseURL("", body, "text/html", "UTF-8", "");
+                web_article.loadDataWithBaseURL("", getHtmlData(body), "text/html", "UTF-8", "");
             }
         });
     }
