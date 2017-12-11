@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private String username_intent;
     private Toolbar toolbar;
     private FloatingActionButton top;
+    private boolean LikeColumn=false;
 
 
     @Override
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         username_intent=intent.getStringExtra("username_intent");
 
         final RecyclerView recyclerView = findViewById(R.id.rev_main);
+        final ImageView like_column=findViewById(R.id.like_column);
         ColumnAdapter=new ColumnAdapter(columnList);
 
         toolbar = findViewById(R.id.toolbar_main);
@@ -175,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
                 showViews();
             }
         });
-        ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+        /*ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                 final Column column = columnList.get(position);
@@ -188,7 +190,8 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("main","main");
                 startActivity(intent);
             }
-        });
+        });*/
+
 
         top.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -258,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
                 String name = jsonObject1.getString("name");
                 String description = jsonObject1.getString("description");
                 String thumbnail=jsonObject1.getString("thumbnail");
-                columnList.add(new Column(name,id,description,thumbnail));
+                columnList.add(new Column(username_intent,name,id,description,thumbnail));
             }
             showResponse();
         } catch (Exception e) {
@@ -287,7 +290,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    public static class ItemClickSupport {
+    /*public static class ItemClickSupport {
         private final RecyclerView mRecyclerView;
         private OnItemClickListener mOnItemClickListener;
         private OnItemLongClickListener mOnItemLongClickListener;
@@ -374,7 +377,7 @@ public class MainActivity extends AppCompatActivity {
 
             boolean onItemLongClicked(RecyclerView recyclerView, int position, View v);
         }
-    }
+    }*/
     public abstract class HidingScrollListener extends RecyclerView.OnScrollListener {
         private static final int HIDE_THRESHOLD = 20;
         private int scrolledDistance = 0;

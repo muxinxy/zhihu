@@ -64,7 +64,7 @@ public class LikeColumnActivity extends AppCompatActivity {
                 String description=cursor.getString(cursor.getColumnIndex("description"));
                 String thumbnail=cursor.getString(cursor.getColumnIndex("thumbnail"));
                 if (username.equals(username_intent)){
-                    like_columnList.add(new LikeColumn(name,column_id,description,thumbnail));
+                    like_columnList.add(new LikeColumn(username,name,column_id,description,thumbnail));
                 }
             }while (cursor.moveToNext());
         }
@@ -95,6 +95,22 @@ public class LikeColumnActivity extends AppCompatActivity {
                     public void run() {
                         swipeRefreshLayout.setRefreshing(false);
                         like_columnList.clear();
+                        SQLiteDatabase sdb = dbHelper.getReadableDatabase();
+                        Cursor cursor=sdb.query("like_column_table",null,null,null,null,null,null);
+                        if (cursor.moveToFirst()) {
+                            do {
+                                String username=cursor.getString(cursor.getColumnIndex("username"));
+                                String column_id=cursor.getString(cursor.getColumnIndex("column_id"));
+                                String name=cursor.getString(cursor.getColumnIndex("name"));
+                                String description=cursor.getString(cursor.getColumnIndex("description"));
+                                String thumbnail=cursor.getString(cursor.getColumnIndex("thumbnail"));
+                                if (username.equals(username_intent)){
+                                    like_columnList.add(new LikeColumn(username_intent,name,column_id,description,thumbnail));
+                                }
+                            }while (cursor.moveToNext());
+                        }
+                        cursor.close();
+                        sdb.close();
                         showResponse();
                     }
                 }, 3000);

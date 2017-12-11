@@ -19,7 +19,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="0sp"
+                android:layout_weight="9"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -28,5 +33,12 @@
                 android:layout_marginTop="10dp"
                 android:text="瞎扯 · 如何正确地吐槽"/>
         </LinearLayout>
+            <ImageView
+                android:layout_width="0sp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:src="@drawable/collection"
+                android:id="@+id/like_article"/>
+    </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>

@@ -82,6 +82,22 @@ public class LikeArticleActivity extends AppCompatActivity {
                     public void run() {
                         swipeRefreshLayout.setRefreshing(false);
                         like_articleList.clear();
+                        SQLiteDatabase sdb = dbHelper.getReadableDatabase();
+                        Cursor cursor=sdb.query("like_article_table",null,null,null,null,null,null);
+                        if (cursor.moveToFirst()) {
+                            do {
+                                String username=cursor.getString(cursor.getColumnIndex("username"));
+                                String news_id=cursor.getString(cursor.getColumnIndex("news_id"));
+                                String title=cursor.getString(cursor.getColumnIndex("title"));
+                                String thumbnail=cursor.getString(cursor.getColumnIndex("thumbnail"));
+                                String url=cursor.getString(cursor.getColumnIndex("url"));
+                                if (username.equals(username_intent)){
+                                    like_articleList.add(new LikeArticle(title,news_id,thumbnail,url));
+                                }
+                            }while (cursor.moveToNext());
+                        }
+                        cursor.close();
+                        sdb.close();
                         showResponse();
                     }
                 }, 3000);

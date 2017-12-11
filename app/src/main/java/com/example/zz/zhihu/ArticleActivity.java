@@ -44,6 +44,10 @@ public class ArticleActivity extends AppCompatActivity {
     private String hot;
     private boolean collect_article=false;
     private String Url;
+    private boolean love_article=false;
+    private Menu menu;
+    private  String columnId_intent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +85,7 @@ public class ArticleActivity extends AppCompatActivity {
             actionBar.setTitle("文章");
         }
         Intent intent=getIntent();
+        columnId_intent=intent.getStringExtra("columnId_intent");
         username_intent=intent.getStringExtra("username_intent");
         NewsId_intent=intent.getStringExtra("NewsId_intent");
         like_NewsId_intent=intent.getStringExtra("like_NewsId_intent");
@@ -88,7 +93,7 @@ public class ArticleActivity extends AppCompatActivity {
         Thumbnail_intent=intent.getStringExtra("Thumbnail_intent");
         Url_intent=intent.getStringExtra("Url_intent");
         hot=intent.getStringExtra("hot");
-        if(hot.equals("hot"))
+        if(hot.equals("hot")||hot.equals("message"))
             Url= "http://news-at.zhihu.com/api/2/news/"+NewsId_intent;
         else
             Url = "http://news-at.zhihu.com/api/2/news/"+like_NewsId_intent;
@@ -132,6 +137,35 @@ public class ArticleActivity extends AppCompatActivity {
         }
         cursor.close();
         sdb.close();
+
+        /*SQLiteDatabase sdb1 = dbHelper.getReadableDatabase();
+        Cursor cursor1=sdb1.query("love_article_table",null,null,null,null,null,null);
+        if (cursor1.moveToFirst()) {
+            do {
+                String username=cursor1.getString(cursor1.getColumnIndex("username"));
+                String article=cursor1.getString(cursor1.getColumnIndex("news_id"));
+                if(hot.equals("hot")){
+                    if (username.equals(username_intent)&&article.equals(NewsId_intent)){
+                        love_article=true;
+                        getMenuInflater().inflate(R.menu.article_menu,menu) ;
+                        MenuItem menuItem=menu.findItem(R.id.LoveArticle);
+                        menuItem.setIcon(R.drawable.like1);
+                        break;
+                    }
+                }
+                else {
+                    if (username.equals(username_intent)&&article.equals(like_NewsId_intent)){
+                        love_article=true;
+                        getMenuInflater().inflate(R.menu.article_menu,menu) ;
+                        MenuItem menuItem=menu.findItem(R.id.LoveArticle);
+                        menuItem.setIcon(R.drawable.like1);
+                        break;
+                    }
+                }
+            }while (cursor1.moveToNext());
+        }
+        cursor1.close();
+        sdb1.close();*/
     }
     private String getHtmlData(String bodyHTML) {
         String head = "<head><style>img{max-width: 100%; width:auto; height: auto;}</style></head>";
@@ -234,17 +268,65 @@ public class ArticleActivity extends AppCompatActivity {
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
+        /*String id;
+        if(hot.equals("hot"))
+            id=NewsId_intent;
+        else
+            id =like_NewsId_intent;
+        getMenuInflater().inflate(R.menu.article_menu, menu);
+        MenuItem item = menu.findItem(R.id.LoveArticle);
+        if (love_article){
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            db.delete("love_article_table","news_id=?",new String[]{id});
+            db.close();
+            love_article=false;
+            item.setIcon(R.drawable.like0);
+        }else {
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put("news_id",id);
+            values.put("username",username_intent);
+            db.insert("love_article_table", null, values);
+            values.clear();
+            db.close();
+            love_article=true;
+            item.setIcon(R.drawable.like1);
+        }
+        return super.onCreateOptionsMenu(menu);*/
         getMenuInflater().inflate(R.menu.article_menu,menu) ;
         return true;
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         String id;
-        if(hot.equals("hot"))
+        if(hot.equals("hot")||hot.equals("message"))
             id=NewsId_intent;
         else
             id =like_NewsId_intent;
         switch (item.getItemId()) {
+            /*case R.id.LoveArticle:
+                if (love_article){
+                    SQLiteDatabase db = dbHelper.getWritableDatabase();
+                    db.delete("love_article_table","news_id=?",new String[]{id});
+                    db.close();
+                    love_article=false;
+                    getMenuInflater().inflate(R.menu.article_menu,menu) ;
+                    MenuItem menuItem=menu.findItem(R.id.LoveArticle);
+                    menuItem.setIcon(R.drawable.like0);
+                }else {
+                    SQLiteDatabase db = dbHelper.getWritableDatabase();
+                    ContentValues values = new ContentValues();
+                    values.put("news_id",id);
+                    values.put("username",username_intent);
+                    db.insert("love_article_table", null, values);
+                    values.clear();
+                    db.close();
+                    love_article=true;
+                    getMenuInflater().inflate(R.menu.article_menu,menu) ;
+                    MenuItem menuItem=menu.findItem(R.id.LoveArticle);
+                    menuItem.setIcon(R.drawable.like1);
+                }
+                break;*/
             case R.id.LongCommits:
                 Intent intent=new Intent(ArticleActivity.this,LongCommitsActivity.class);
                 intent.putExtra("NewsId_intent",NewsId_intent);
@@ -300,8 +382,15 @@ public class ArticleActivity extends AppCompatActivity {
         intent1.putExtra("username_intent",username_intent);
         Intent intent2=new Intent(ArticleActivity.this,LikeArticleActivity.class);
         intent2.putExtra("username_intent",username_intent);
+        Intent intent3=new Intent(ArticleActivity.this,MessageActivity.class);
+        intent3.putExtra("username_intent",username_intent);
+        intent3.putExtra("main","main");
+        intent3.putExtra("columnId_intent",columnId_intent);
         if(hot.equals("hot"))
             startActivity(intent1);
+        else if (hot.equals("message")){
+            startActivity(intent3);
+        }
         else startActivity(intent2);
         finish();
     }

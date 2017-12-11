@@ -56,7 +56,7 @@ public class LongCommitsActivity extends AppCompatActivity {
         NewsId_intent=intent.getStringExtra("NewsId_intent");
         like_NewsId_intent=intent.getStringExtra("like_NewsId_intent");
         hot=intent.getStringExtra("hot");
-        if(hot.equals("hot"))
+        if(hot.equals("hot")||hot.equals("message"))
             Url="https://news-at.zhihu.com/api/4/story/"+NewsId_intent+"/long-comments";
         else
             Url="https://news-at.zhihu.com/api/4/story/"+like_NewsId_intent+"/long-comments";
