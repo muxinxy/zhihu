@@ -145,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
 
         swipeRefreshLayout=findViewById(R.id.sre_main);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,R.color.colorAccent,R.color.colorButton);
+        swipeRefreshLayout.setProgressViewEndTarget (false,300);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -156,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
                         columnList.clear();
                         sendRequestWithHttpURLConnection();
                     }
-                }, 3000);
+                }, 1000);
             }
         });
         if (ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.INTERNET)!=PackageManager.PERMISSION_GRANTED)
@@ -379,8 +380,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }*/
     public abstract class HidingScrollListener extends RecyclerView.OnScrollListener {
-        private static final int HIDE_THRESHOLD = 20;
-        private int scrolledDistance = 0;
+        private static final int HIDE_THRESHOLD = 200;
+        private int scrolledDistance = 20;
         private boolean controlsVisible = true;
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {

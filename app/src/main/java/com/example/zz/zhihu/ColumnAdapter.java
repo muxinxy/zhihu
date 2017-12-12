@@ -25,7 +25,6 @@ public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.ViewHolder
 
     private List<Column> mColumnList;
     private Context mContext;
-    private boolean LikeColumn=false;
     private MyDatabaseHelper dbHelper;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -76,6 +75,7 @@ public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.ViewHolder
             @SuppressWarnings("deprecation")
             @Override
             public void onClick(View v) {
+                boolean LikeColumn=false;
                 int position=holder.getAdapterPosition();
                 Column column = mColumnList.get(position);
                 dbHelper =new MyDatabaseHelper(mContext,"data.db",null,1) ;

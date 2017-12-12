@@ -28,25 +28,23 @@
         app:fabSize="normal"
         app:pressedTranslationZ="12dp"
         app:rippleColor="#a6a6a6" />
-
-    <android.support.design.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
         <android.support.v4.widget.SwipeRefreshLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/sre_main"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:paddingTop="?attr/actionBarSize">
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rev_main"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 android:clipToPadding="false"
-                android:paddingTop="?attr/actionBarSize"/>
+                android:paddingTop="?attr/actionBarSize" />
         </android.support.v4.widget.SwipeRefreshLayout>
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_main"
             android:layout_height="?attr/actionBarSize"
