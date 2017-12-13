@@ -35,10 +35,7 @@ public class LongCommitsActivity extends AppCompatActivity {
     RecyclerView.LayoutManager recyclerViewlayoutManager;
     private String Url;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private String NewsId_intent,like_NewsId_intent;
-    private String LCN;//长评论数
-    private String JsonLength="6";
-    private String intent_intent;
+    private String LCN;//long commits number
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,13 +50,8 @@ public class LongCommitsActivity extends AppCompatActivity {
             actionBar.setTitle("长评论");
         }
         Intent intent=getIntent();
-        NewsId_intent=intent.getStringExtra("NewsId_intent");
-        like_NewsId_intent=intent.getStringExtra("like_NewsId_intent");
-        intent_intent=intent.getStringExtra("hot");
-        if(intent_intent.equals("hot")||intent_intent.equals("message"))
-            Url="https://news-at.zhihu.com/api/4/story/"+NewsId_intent+"/long-comments";
-        else
-            Url="https://news-at.zhihu.com/api/4/story/"+like_NewsId_intent+"/long-comments";
+        String newsId_intent = intent.getStringExtra("NewsId_intent");
+        Url="https://news-at.zhihu.com/api/4/story/"+ newsId_intent +"/long-comments";
         RecyclerView recyclerView = findViewById(R.id.rev_long_commits);
         LongCommitsAdapter adapter = new LongCommitsAdapter(LongCommitsList);
         recyclerView.setAdapter(adapter);
@@ -70,6 +62,7 @@ public class LongCommitsActivity extends AppCompatActivity {
 
         swipeRefreshLayout=findViewById(R.id.sre_long_commits);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,R.color.colorAccent,R.color.colorButton);
+        swipeRefreshLayout.setProgressViewEndTarget (false,300);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -81,7 +74,7 @@ public class LongCommitsActivity extends AppCompatActivity {
                         LongCommitsList.clear();
                         sendRequestWithHttpURLConnection();
                     }
-                }, 3000);
+                }, 1000);
             }
         });
 
@@ -158,31 +151,33 @@ public class LongCommitsActivity extends AppCompatActivity {
             if(!LCN.equals("0")){
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject1 = (JSONObject)jsonArray.get(i);
-                    JsonLength=String.valueOf(jsonObject1.length());
+                    String jsonLength = String.valueOf(jsonObject1.length());
                     String author=jsonObject1.getString("author");
                     String content = jsonObject1.getString("content");
                     String id = jsonObject1.getString("id");
                     String avatar = jsonObject1.getString("avatar");
                     String time = jsonObject1.getString("time");
                     String likes = jsonObject1.getString("likes");
-                    if(JsonLength.equals("7")){
+                    if(jsonLength.equals("7")){
                         JSONObject reply_to=jsonObject1.getJSONObject("reply_to");
                         for (int j=0;j<reply_to.length();j++){
-                            reply_content=reply_to.getString("content");
                             reply_status=reply_to.getString("status");
-                            reply_id=reply_to.getString("id");
-                            reply_author=reply_to.getString("author");
-                            if(!reply_status.equals("0"))
-                                err_msg=reply_to.getString("err_msg");
+                            if (reply_status.equals("0")){
+                                reply_content=reply_to.getString("content");
+                                reply_id=reply_to.getString("id");
+                                reply_author=reply_to.getString("author");
+                            }
+                            else
+                                err_msg=reply_to.getString("error_msg");
                         }
                     }
-                    LongCommitsList.add(new LongCommits(author,id,content,avatar,likes,time,reply_content,reply_status,reply_id,reply_author,err_msg,JsonLength));
+                    LongCommitsList.add(new LongCommits(author,id,content,avatar,likes,time,reply_content,reply_status,reply_id,reply_author,err_msg,jsonLength));
                     reply_content = null;
                     reply_status = null;
                     reply_id = null;
                     reply_author = null;
                     err_msg = null;
-                    JsonLength="6";
+                    jsonLength="6";
                 }
             }
             showResponse();

@@ -35,10 +35,7 @@ public class ShortCommitsActivity extends AppCompatActivity {
     RecyclerView.LayoutManager recyclerViewlayoutManager;
     private String Url;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private String NewsId_intent,like_NewsId_intent;
-    private String LCN;//短评论数
-    private String JsonLength="6";
-    private String intent_intent;
+    private String SCN;//short commits number
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,14 +50,8 @@ public class ShortCommitsActivity extends AppCompatActivity {
             actionBar.setTitle("短评论");
         }
         Intent intent=getIntent();
-        NewsId_intent=intent.getStringExtra("NewsId_intent");
-        like_NewsId_intent=intent.getStringExtra("like_NewsId_intent");
-        intent_intent=intent.getStringExtra("hot");
-        if(intent_intent.equals("hot")||intent_intent.equals("message"))
-            Url="https://news-at.zhihu.com/api/4/story/"+NewsId_intent+"/short-comments";
-        else
-            Url="https://news-at.zhihu.com/api/4/story/"+like_NewsId_intent+"/short-comments";
-
+        String newsId_intent = intent.getStringExtra("NewsId_intent");
+        Url="https://news-at.zhihu.com/api/4/story/"+ newsId_intent +"/short-comments";
         RecyclerView recyclerView = findViewById(R.id.rev_short_commits);
         ShortCommitsAdapter adapter = new ShortCommitsAdapter(ShortCommitsList);
         recyclerView.setAdapter(adapter);
@@ -154,19 +145,19 @@ public class ShortCommitsActivity extends AppCompatActivity {
         try {
             JSONObject jsonObject=new JSONObject(data);
             JSONArray jsonArray=jsonObject.getJSONArray("comments");
-            LCN=String.valueOf(jsonArray.length());
+            SCN=String.valueOf(jsonArray.length());
 
-            if(!LCN.equals("0")){
+            if(!SCN.equals("0")){
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject1 = (JSONObject)jsonArray.get(i);
-                    JsonLength=String.valueOf(jsonObject1.length());
+                    String jsonLength = String.valueOf(jsonObject1.length());
                     String author=jsonObject1.getString("author");
                     String content = jsonObject1.getString("content");
                     String id = jsonObject1.getString("id");
                     String avatar = jsonObject1.getString("avatar");
                     String time = jsonObject1.getString("time");
                     String likes = jsonObject1.getString("likes");
-                    if(JsonLength.equals("7")){
+                    if(jsonLength.equals("7")){
                         JSONObject reply_to=jsonObject1.getJSONObject("reply_to");
                         for (int j=0;j<reply_to.length();j++){
                             reply_content=reply_to.getString("content");
@@ -177,13 +168,12 @@ public class ShortCommitsActivity extends AppCompatActivity {
                                 err_msg=reply_to.getString("err_msg");
                         }
                     }
-                    ShortCommitsList.add(new ShortCommits(author,id,content,avatar,likes,time,reply_content,reply_status,reply_id,reply_author,err_msg,JsonLength));
+                    ShortCommitsList.add(new ShortCommits(author,id,content,avatar,likes,time,reply_content,reply_status,reply_id,reply_author,err_msg, jsonLength));
                     reply_content = null;
                     reply_status = null;
                     reply_id = null;
                     reply_author = null;
                     err_msg = null;
-                    JsonLength="6";
                 }
             }
             showResponse();
@@ -196,7 +186,7 @@ public class ShortCommitsActivity extends AppCompatActivity {
             @Override
             public void run() {
                 TextView number=findViewById(R.id.number);
-                number.setText(LCN);
+                number.setText(SCN);
                 RecyclerView recyclerView = findViewById(R.id.rev_short_commits);
                 ShortCommitsAdapter adapter = new ShortCommitsAdapter(ShortCommitsList);
                 recyclerView.setAdapter(adapter);

@@ -19,7 +19,7 @@ import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder>{
 
-    private List<Message> mMessageList;
+    private List<Messages> mMessageList;
     private Context mContext;
     private MyDatabaseHelper dbHelper;
 
@@ -29,18 +29,22 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         TextView messageTitle;
         TextView messageDate;
         ImageView like_article;
+        TextView LongCommitsNum;
+        TextView ShortCommitsNum;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
             messageView = view;
             messageImage = view.findViewById(R.id.message_image);
             messageTitle = view.findViewById(R.id.message_title);
             messageDate=view.findViewById(R.id.message_date);
             like_article=view.findViewById(R.id.like_article);
+            LongCommitsNum=view.findViewById(R.id.LongCommitsNum);
+            ShortCommitsNum=view.findViewById(R.id.ShortCommitsNum);
         }
     }
 
-    public MessageAdapter(List<Message> messageList) {
+    MessageAdapter(List<Messages> messageList) {
         mMessageList = messageList;
     }
 
@@ -55,7 +59,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             @Override
             public void onClick(View v) {
                 int position=holder.getAdapterPosition();
-                Message message = mMessageList.get(position);
+                Messages message = mMessageList.get(position);
                 Intent intent=new Intent(mContext,ArticleActivity.class);
                 intent.putExtra("Title_intent",message.getTitle());
                 intent.putExtra("username_intent",message.getUsername());
@@ -71,7 +75,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             public void onClick(View v) {
                 boolean LikeColumn=false;
                 int position=holder.getAdapterPosition();
-                Message message= mMessageList.get(position);
+                Messages message= mMessageList.get(position);
                 dbHelper =new MyDatabaseHelper(mContext,"data.db",null,1) ;
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 Cursor cursor=db.query("like_article_table",null,null,null,null,null,null);
@@ -87,36 +91,34 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 }
                 cursor.close();
                 if (!LikeColumn){
-                    //Glide.with(mContext).load(R.drawable.collect1).asBitmap().into(holder.like_article);
                     ContentValues values = new ContentValues();
                     values.put("news_id",message.getId());
                     values.put("username",message.getUsername());
                     values.put("title",message.getTitle());
                     values.put("thumbnail",message.getImages());
                     db.insert("like_article_table", null, values);
+                    db.close();
                     values.clear();
-                    LikeColumn=true;
                     Toast.makeText(mContext,"已收藏",Toast.LENGTH_SHORT).show();
                     Glide.with(mContext).load(R.drawable.collect1).asBitmap().into(holder.like_article);
                 }else {
-                    //Glide.with(mContext).load(R.drawable.collection).asBitmap().into(holder.like_article);
                     db.delete("like_article_table","news_id=?",new String[]{message.getId()});
                     db.close();
-                    LikeColumn=false;
                     Toast.makeText(mContext,"已取消收藏",Toast.LENGTH_SHORT).show();
                     Glide.with(mContext).load(R.drawable.collection).asBitmap().into(holder.like_article);
                 }
             }
         });
-        //return new ViewHolder(view);
         return holder;
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final Message message = mMessageList.get(position);
+        final Messages message = mMessageList.get(position);
         holder.messageTitle.setText(message.getTitle());
         holder.messageDate.setText(message.getDisplay_date());
+        holder.LongCommitsNum.setText(message.getLCN());
+        holder.ShortCommitsNum.setText(message.getSCN());
         Glide.with(mContext).load(message.getImages()).asBitmap().placeholder(R.drawable.zhihu).error(R.drawable.zhihu).into(holder.messageImage);
         dbHelper =new MyDatabaseHelper(mContext,"data.db",null,1) ;
         SQLiteDatabase db = dbHelper.getWritableDatabase();

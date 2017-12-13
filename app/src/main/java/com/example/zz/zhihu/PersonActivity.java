@@ -1,6 +1,7 @@
 package com.example.zz.zhihu;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -172,6 +173,7 @@ public class PersonActivity extends AppCompatActivity {
         intent.setType("image/*");
         startActivityForResult(intent, CHOOSE_PHOTO); // 打开相册
     }
+    @SuppressLint("ObsoleteSdkInt")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {

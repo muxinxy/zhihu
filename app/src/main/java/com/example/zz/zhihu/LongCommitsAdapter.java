@@ -27,7 +27,7 @@ public class LongCommitsAdapter extends RecyclerView.Adapter<LongCommitsAdapter.
         TextView long_commitsContent;
         TextView reply_Long_commitsContent;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
             long_commitsView = view;
             long_commitsImage = view.findViewById(R.id.avatar);
@@ -40,7 +40,7 @@ public class LongCommitsAdapter extends RecyclerView.Adapter<LongCommitsAdapter.
         }
     }
 
-    public LongCommitsAdapter(List<LongCommits> long_commitsList) {
+    LongCommitsAdapter(List<LongCommits> long_commitsList) {
         mLongCommitsList = long_commitsList;
     }
 
@@ -57,11 +57,15 @@ public class LongCommitsAdapter extends RecyclerView.Adapter<LongCommitsAdapter.
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final LongCommits long_commits = mLongCommitsList.get(position);
         holder.long_commitsAuthor.setText(long_commits.getAuthor());
-        holder.reply_long_commitsAuthor.setText(long_commits.getReply_author());
         holder.long_commitsLikes.setText(long_commits.getLikes());
         holder.long_commitsTime.setText(long_commits.getTime());
         holder.long_commitsContent.setText(long_commits.getContent());
-        holder.reply_Long_commitsContent.setText(long_commits.getReply_content());
+        if (long_commits.getJsonLength().equals("7")) {
+            if (long_commits.getReply_status().equals("0")){
+                holder.reply_long_commitsAuthor.setText(long_commits.getReply_author());
+                holder.reply_Long_commitsContent.setText(long_commits.getReply_content());
+            }else holder.reply_Long_commitsContent.setText(long_commits.getReply_err_msg());
+        }
         Glide.with(mContext).load(long_commits.getAvatar()).asBitmap().placeholder(R.drawable.zhihu).error(R.drawable.zhihu).into(holder.long_commitsImage);
     }
     @Override

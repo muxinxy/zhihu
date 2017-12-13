@@ -1,4 +1,16 @@
 <resources>
     <string name="app_name">知乎日报</string>
     <string name="hot_news">热门消息</string>
+    <string name="LongCommits">长评论</string>
+    <string name="ShortCommits">短评论</string>
+    <string name="Index">个人主页</string>
+    <string name="Column">栏目总览</string>
+    <string name="Hot">热门消息</string>
+    <string name="Other">其他</string>
+    <string name="About">关于</string>
+    <string name="Quit">退出登录</string>
+    <string name="CollectColumn">收藏栏目</string>
+    <string name="QuitCollectColumn">取消收藏</string>
+    <string name="LCN">长评数：</string>
+    <string name="SCN">短评数：</string>
 </resources>

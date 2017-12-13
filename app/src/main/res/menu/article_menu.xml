@@ -2,25 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
-
     <item
         android:id="@+id/LongCommits"
-        android:title="长评论"
+        android:title="@string/LongCommits"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/ShortCommits"
-        android:title="短评论"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/Collect_Article"
-        android:title="收藏文章"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/QuitCollect_Article"
-        android:title="取消收藏"
+        android:title="@string/ShortCommits"
         app:showAsAction="never" />
 
 </menu>

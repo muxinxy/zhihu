@@ -27,7 +27,7 @@ public class ShortCommitsAdapter extends RecyclerView.Adapter<ShortCommitsAdapte
         TextView short_commitsContent;
         TextView reply_Short_commitsContent;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
             short_commitsView = view;
             short_commitsImage = view.findViewById(R.id.avatar);
@@ -40,7 +40,7 @@ public class ShortCommitsAdapter extends RecyclerView.Adapter<ShortCommitsAdapte
         }
     }
 
-    public ShortCommitsAdapter(List<ShortCommits> short_commitsList) {
+    ShortCommitsAdapter(List<ShortCommits> short_commitsList) {
         mShortCommitsList = short_commitsList;
     }
 

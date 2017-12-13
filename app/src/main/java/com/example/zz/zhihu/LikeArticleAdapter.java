@@ -38,7 +38,7 @@ public class LikeArticleAdapter extends RecyclerView.Adapter<LikeArticleAdapter.
         }
     }
 
-    public LikeArticleAdapter(List<LikeArticle> like_articleList) {
+    LikeArticleAdapter(List<LikeArticle> like_articleList) {
         mLikeArticleList = like_articleList;
     }
 
@@ -55,12 +55,7 @@ public class LikeArticleAdapter extends RecyclerView.Adapter<LikeArticleAdapter.
                 int position=holder.getAdapterPosition();
                 LikeArticle likeArticle = mLikeArticleList.get(position);
                 Intent intent=new Intent(mContext,ArticleActivity.class);
-                intent.putExtra("Title_intent",likeArticle.getTitle());
-                intent.putExtra("username_intent",likeArticle.getUsername());
                 intent.putExtra("NewsId_intent",likeArticle.getNews_id());
-                intent.putExtra("Url_intent",likeArticle.getUrl());
-                intent.putExtra("Thumbnail_intent",likeArticle.getThumbnail());
-                intent.putExtra("hot","like");
                 mContext.startActivity(intent);
             }
         });
@@ -86,7 +81,6 @@ public class LikeArticleAdapter extends RecyclerView.Adapter<LikeArticleAdapter.
                 }
                 cursor.close();
                 if (!LikeColumn){
-                    //Glide.with(mContext).load(R.drawable.collect1).asBitmap().into(holder.like_column);
                     ContentValues values = new ContentValues();
                     values.put("news_id",likeArticle.getNews_id());
                     values.put("username",likeArticle.getUsername());
@@ -95,20 +89,16 @@ public class LikeArticleAdapter extends RecyclerView.Adapter<LikeArticleAdapter.
                     values.put("thumbnail",likeArticle.getThumbnail());
                     db.insert("like_article_table", null, values);
                     values.clear();
-                    LikeColumn=true;
                     Toast.makeText(mContext,"已收藏",Toast.LENGTH_SHORT).show();
                     Glide.with(mContext).load(R.drawable.collect1).asBitmap().into(holder.like_article);
                 }else {
-                    //Glide.with(mContext).load(R.drawable.collection).asBitmap().into(holder.like_column);
                     db.delete("like_article_table","news_id=?",new String[]{likeArticle.getNews_id()});
                     db.close();
-                    LikeColumn=false;
                     Toast.makeText(mContext,"已取消收藏",Toast.LENGTH_SHORT).show();
                     Glide.with(mContext).load(R.drawable.collection).asBitmap().into(holder.like_article);
                 }
             }
         });
-        //return new ViewHolder(view);
         return holder;
     }
 

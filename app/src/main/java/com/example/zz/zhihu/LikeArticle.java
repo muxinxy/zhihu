@@ -3,10 +3,10 @@ package com.example.zz.zhihu;
 public class LikeArticle {
     String username;
     String title;
-    String news_id;
+    private String news_id;
     String thumbnail;
     String url;
-    public LikeArticle(String username,String title,String news_id,String thumbnail,String url){
+    LikeArticle(String username, String title, String news_id, String thumbnail, String url){
         this.username=username;
         this.title=title;
         this.news_id=news_id;
@@ -19,7 +19,7 @@ public class LikeArticle {
     public String getTitle(){
         return title;
     }
-    public String getNews_id(){
+    String getNews_id(){
         return news_id;
     }
     public String getThumbnail(){

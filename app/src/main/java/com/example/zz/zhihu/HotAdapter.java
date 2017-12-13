@@ -28,17 +28,20 @@ public class HotAdapter extends RecyclerView.Adapter<HotAdapter.ViewHolder>{
         ImageView hotImage;
         TextView hotTitle;
         ImageView like_article;
-
+        TextView LongCommitsNum;
+        TextView ShortCommitsNum;
         public ViewHolder(View view) {
             super(view);
             hotView = view;
             hotImage = view.findViewById(R.id.hot_image);
             hotTitle = view.findViewById(R.id.hot_title);
             like_article=view.findViewById(R.id.like_article);
+            LongCommitsNum=view.findViewById(R.id.LongCommitsNum);
+            ShortCommitsNum=view.findViewById(R.id.ShortCommitsNum);
         }
     }
 
-    public HotAdapter(List<Hot> hotList) {
+    HotAdapter(List<Hot> hotList) {
         mHotList = hotList;
     }
 
@@ -86,7 +89,6 @@ public class HotAdapter extends RecyclerView.Adapter<HotAdapter.ViewHolder>{
                 }
                 cursor.close();
                 if (!LikeColumn){
-                    //Glide.with(mContext).load(R.drawable.collect1).asBitmap().into(holder.like_column);
                     ContentValues values = new ContentValues();
                     values.put("news_id",hot.getNews_id());
                     values.put("username",hot.getUsername());
@@ -94,21 +96,18 @@ public class HotAdapter extends RecyclerView.Adapter<HotAdapter.ViewHolder>{
                     values.put("url",hot.getUrl());
                     values.put("thumbnail",hot.getThumbnail());
                     db.insert("like_article_table", null, values);
+                    db.close();
                     values.clear();
-                    LikeColumn=true;
                     Toast.makeText(mContext,"已收藏",Toast.LENGTH_SHORT).show();
                     Glide.with(mContext).load(R.drawable.collect1).asBitmap().into(holder.like_article);
                 }else {
-                    //Glide.with(mContext).load(R.drawable.collection).asBitmap().into(holder.like_column);
                     db.delete("like_article_table","news_id=?",new String[]{hot.getNews_id()});
                     db.close();
-                    LikeColumn=false;
                     Toast.makeText(mContext,"已取消收藏",Toast.LENGTH_SHORT).show();
                     Glide.with(mContext).load(R.drawable.collection).asBitmap().into(holder.like_article);
                 }
             }
         });
-        //return new ViewHolder(view);
         return holder;
     }
 
@@ -116,6 +115,8 @@ public class HotAdapter extends RecyclerView.Adapter<HotAdapter.ViewHolder>{
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Hot hot = mHotList.get(position);
         holder.hotTitle.setText(hot.getTitle());
+        holder.LongCommitsNum.setText(hot.getLCN());
+        holder.ShortCommitsNum.setText(hot.getSCN());
         Glide.with(mContext).load(hot.getThumbnail()).asBitmap().placeholder(R.drawable.zhihu).error(R.drawable.zhihu).into(holder.hotImage);
         dbHelper =new MyDatabaseHelper(mContext,"data.db",null,1) ;
         SQLiteDatabase db = dbHelper.getWritableDatabase();

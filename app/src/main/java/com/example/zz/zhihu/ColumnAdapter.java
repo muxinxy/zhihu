@@ -1,6 +1,5 @@
 package com.example.zz.zhihu;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -8,17 +7,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.TimingLogger;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
-
-import java.util.HashMap;
 import java.util.List;
 
 public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.ViewHolder>{
@@ -45,7 +40,7 @@ public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.ViewHolder
             like_column=view.findViewById(R.id.like_column);
         }
     }
-    public ColumnAdapter(List<Column> columnList) {
+    ColumnAdapter(List<Column> columnList) {
         mColumnList = columnList;
     }
 
@@ -93,7 +88,6 @@ public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.ViewHolder
                 }
                 cursor.close();
                 if (!LikeColumn){
-                    //Glide.with(mContext).load(R.drawable.collect1).asBitmap().into(holder.like_column);
                     ContentValues values = new ContentValues();
                     values.put("column_id",column.getId());
                     values.put("username",column.getUsername());
@@ -102,20 +96,16 @@ public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.ViewHolder
                     values.put("thumbnail",column.getThumbnail());
                     db.insert("like_column_table", null, values);
                     values.clear();
-                    LikeColumn=true;
                     Toast.makeText(mContext,"已收藏",Toast.LENGTH_SHORT).show();
                     Glide.with(mContext).load(R.drawable.collect1).asBitmap().into(holder.like_column);
                 }else {
-                    //Glide.with(mContext).load(R.drawable.collection).asBitmap().into(holder.like_column);
                     db.delete("like_column_table","column_id=?",new String[]{column.getId()});
                     db.close();
-                    LikeColumn=false;
                     Toast.makeText(mContext,"已取消收藏",Toast.LENGTH_SHORT).show();
                     Glide.with(mContext).load(R.drawable.collection).asBitmap().into(holder.like_column);
                 }
             }
         });
-        //return new ViewHolder(view);
         return holder;
     }
 

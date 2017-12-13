@@ -2,16 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
-
     <item
         android:id="@+id/Collect_Column"
-        android:title="收藏栏目"
+        android:title="@string/CollectColumn"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/QuitCollect_Column"
-        android:title="取消收藏"
+        android:title="@string/QuitCollectColumn"
         app:showAsAction="never" />
 
 </menu>

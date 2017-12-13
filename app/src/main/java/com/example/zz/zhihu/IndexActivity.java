@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 public class IndexActivity extends AppCompatActivity {
-    private SQLiteOpenHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +23,7 @@ public class IndexActivity extends AppCompatActivity {
 
         FloatingActionButton fab=findViewById(R.id.fab);
 
-        dbHelper =new MyDatabaseHelper(this,"data.db",null,1) ;
+        SQLiteOpenHelper dbHelper = new MyDatabaseHelper(this, "data.db", null, 1);
         dbHelper.getWritableDatabase();
 
         Intent intent=getIntent();
