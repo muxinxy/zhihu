@@ -133,7 +133,7 @@ public class LikeColumnActivity extends AppCompatActivity {
                 intent.putExtra("columnName_intent",like_column.getName());
                 intent.putExtra("columnDescription_intent",like_column.getDescription());
                 intent.putExtra("columnThumbnail_intent",like_column.getThumbnail());
-                intent.putExtra("main","like");
+                intent.putExtra("intent_intent","like");
                 startActivity(intent);
                 finish();
             }

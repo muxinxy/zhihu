@@ -67,7 +67,7 @@ public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.ViewHolder
                 intent.putExtra("columnName_intent",column.getName());
                 intent.putExtra("columnDescription_intent",column.getDescription());
                 intent.putExtra("columnThumbnail_intent",column.getThumbnail());
-                intent.putExtra("main","main");
+                intent.putExtra("intent_intent","main");
                 mContext.startActivity(intent);
             }
         });

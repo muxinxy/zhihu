@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private String username_intent;
     private Toolbar toolbar;
     private FloatingActionButton top;
-    private boolean LikeColumn=false;
+    //private boolean LikeColumn=false;
 
 
     @Override
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         username_intent=intent.getStringExtra("username_intent");
 
         final RecyclerView recyclerView = findViewById(R.id.rev_main);
-        final ImageView like_column=findViewById(R.id.like_column);
+        //final ImageView like_column=findViewById(R.id.like_column);
         ColumnAdapter=new ColumnAdapter(columnList);
 
         toolbar = findViewById(R.id.toolbar_main);

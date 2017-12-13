@@ -38,7 +38,7 @@ public class ShortCommitsActivity extends AppCompatActivity {
     private String NewsId_intent,like_NewsId_intent;
     private String LCN;//短评论数
     private String JsonLength="6";
-    private String hot;
+    private String intent_intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +55,8 @@ public class ShortCommitsActivity extends AppCompatActivity {
         Intent intent=getIntent();
         NewsId_intent=intent.getStringExtra("NewsId_intent");
         like_NewsId_intent=intent.getStringExtra("like_NewsId_intent");
-        hot=intent.getStringExtra("hot");
-        if(hot.equals("hot")||hot.equals("message"))
+        intent_intent=intent.getStringExtra("hot");
+        if(intent_intent.equals("hot")||intent_intent.equals("message"))
             Url="https://news-at.zhihu.com/api/4/story/"+NewsId_intent+"/short-comments";
         else
             Url="https://news-at.zhihu.com/api/4/story/"+like_NewsId_intent+"/short-comments";

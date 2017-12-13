@@ -41,7 +41,7 @@ public class ArticleActivity extends AppCompatActivity {
     private MyDatabaseHelper dbHelper;
     private String body,css,CSS;
     private WebView web_article;
-    private String hot;
+    private String intent_intent;
     private boolean collect_article=false;
     private String Url;
     private boolean love_article=false;
@@ -92,8 +92,8 @@ public class ArticleActivity extends AppCompatActivity {
         Title_intent=intent.getStringExtra("Title_intent");
         Thumbnail_intent=intent.getStringExtra("Thumbnail_intent");
         Url_intent=intent.getStringExtra("Url_intent");
-        hot=intent.getStringExtra("hot");
-        if(hot.equals("hot")||hot.equals("message"))
+        intent_intent=intent.getStringExtra("intent_intent");
+        if(intent_intent.equals("hot")||intent_intent.equals("message"))
             Url= "http://news-at.zhihu.com/api/2/news/"+NewsId_intent;
         else
             Url = "http://news-at.zhihu.com/api/2/news/"+like_NewsId_intent;
@@ -121,7 +121,7 @@ public class ArticleActivity extends AppCompatActivity {
             do {
                 String username=cursor.getString(cursor.getColumnIndex("username"));
                 String article=cursor.getString(cursor.getColumnIndex("news_id"));
-                if(hot.equals("hot")){
+                if(intent_intent.equals("hot")){
                     if (username.equals(username_intent)&&article.equals(NewsId_intent)){
                         collect_article=true;
                         break;
@@ -299,7 +299,7 @@ public class ArticleActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         String id;
-        if(hot.equals("hot")||hot.equals("message"))
+        if(intent_intent.equals("hot")||intent_intent.equals("message"))
             id=NewsId_intent;
         else
             id =like_NewsId_intent;
@@ -331,14 +331,14 @@ public class ArticleActivity extends AppCompatActivity {
                 Intent intent=new Intent(ArticleActivity.this,LongCommitsActivity.class);
                 intent.putExtra("NewsId_intent",NewsId_intent);
                 intent.putExtra("like_NewsId_intent",like_NewsId_intent);
-                intent.putExtra("hot",hot);
+                intent.putExtra("hot",intent_intent);
                 startActivity(intent);
                 break;
             case R.id.ShortCommits:
                 Intent intent1=new Intent(ArticleActivity.this,ShortCommitsActivity.class);
                 intent1.putExtra("NewsId_intent",NewsId_intent);
                 intent1.putExtra("like_NewsId_intent",like_NewsId_intent);
-                intent1.putExtra("hot",hot);
+                intent1.putExtra("hot",intent_intent);
                 startActivity(intent1);
                 break;
             case R.id.Collect_Article:
@@ -382,16 +382,16 @@ public class ArticleActivity extends AppCompatActivity {
         intent1.putExtra("username_intent",username_intent);
         Intent intent2=new Intent(ArticleActivity.this,LikeArticleActivity.class);
         intent2.putExtra("username_intent",username_intent);
-        Intent intent3=new Intent(ArticleActivity.this,MessageActivity.class);
-        intent3.putExtra("username_intent",username_intent);
-        intent3.putExtra("main","main");
-        intent3.putExtra("columnId_intent",columnId_intent);
-        if(hot.equals("hot"))
+        //Intent intent3=new Intent(ArticleActivity.this,MessageActivity.class);
+        //intent3.putExtra("username_intent",username_intent);
+        //intent3.putExtra("intent_intent","main");
+        //intent3.putExtra("columnId_intent",columnId_intent);
+        if(intent_intent.equals("hot"))
             startActivity(intent1);
-        else if (hot.equals("message")){
-            startActivity(intent3);
-        }
-        else startActivity(intent2);
+        //else if (intent_intent.equals("message"))
+            //startActivity(intent3);
+        else if (intent_intent.equals("like_article"))
+            startActivity(intent2);
         finish();
     }
 }

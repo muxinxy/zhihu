@@ -45,7 +45,7 @@ public class MessageActivity extends AppCompatActivity {
     RecyclerView.LayoutManager recyclerViewlayoutManager;
     private String columnId_intent;
     private String like_columnId_intent=null;
-    private String main;
+    private String intent_intent;
     private String username_intent;
     private String columnName_intent;
     private String columnDescription_intent;
@@ -79,8 +79,8 @@ public class MessageActivity extends AppCompatActivity {
         columnName_intent=intent.getStringExtra("columnName_intent");
         columnDescription_intent=intent.getStringExtra("columnDescription_intent");
         columnThumbnail_intent=intent.getStringExtra("columnThumbnail_intent");
-        main=intent.getStringExtra("main");
-        if(main.equals("main"))
+        intent_intent=intent.getStringExtra("intent_intent");
+        if(intent_intent.equals("main"))
             Url= "http://news-at.zhihu.com/api/3/section/"+columnId_intent;
         else
             Url = "http://news-at.zhihu.com/api/3/section/"+like_columnId_intent;
@@ -96,6 +96,7 @@ public class MessageActivity extends AppCompatActivity {
 
         swipeRefreshLayout=findViewById(R.id.sre_message);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,R.color.colorAccent,R.color.colorButton);
+        swipeRefreshLayout.setProgressViewEndTarget (false,300);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -107,7 +108,7 @@ public class MessageActivity extends AppCompatActivity {
                         messageList.clear();
                         sendRequestWithHttpURLConnection();
                     }
-                }, 3000);
+                }, 1000);
             }
         });
         if (ContextCompat.checkSelfPermission(MessageActivity.this, Manifest.permission.INTERNET)!= PackageManager.PERMISSION_GRANTED)
@@ -122,7 +123,7 @@ public class MessageActivity extends AppCompatActivity {
             do {
                 String username=cursor.getString(cursor.getColumnIndex("username"));
                 String column=cursor.getString(cursor.getColumnIndex("column_id"));
-                if(main.equals("main")){
+                if(intent_intent.equals("main")){
                     if (username.equals(username_intent)&&column.equals(columnId_intent)){
                         collect_column=true;
                         break;
@@ -139,20 +140,20 @@ public class MessageActivity extends AppCompatActivity {
         cursor.close();
         sdb.close();
 
-        MessageActivity.ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new MessageActivity.ItemClickSupport.OnItemClickListener() {
+        /*MessageActivity.ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new MessageActivity.ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                 final Message message = messageList.get(position);
                 Intent intent=new Intent(MessageActivity.this,ArticleActivity.class);
                 intent.putExtra("NewsId_intent",message.getId());
-                intent.putExtra("hot","message");
+                intent.putExtra("intent_intent","message");
                 intent.putExtra("columnId_intent",columnId_intent);
                 intent.putExtra("username_intent",username_intent);
                 intent.putExtra("title",message.getTitle());
                 intent.putExtra("thumbnail",message.getImages());
                 startActivity(intent);
             }
-        });
+        });*/
 
     }
 
@@ -224,7 +225,7 @@ public class MessageActivity extends AppCompatActivity {
                 String id = jsonObject1.getString("id");
                 String title = jsonObject1.getString("title");
 
-                messageList.add(new Message(title,id,display_date,images));
+                messageList.add(new Message(username_intent,title,id,display_date,images));
 
             }
             String name=jsonObject.getString("name");
@@ -252,7 +253,7 @@ public class MessageActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         String id;
-        if(main.equals("main"))
+        if(intent_intent.equals("main"))
             id=columnId_intent;
         else
             id =like_columnId_intent;
@@ -290,12 +291,12 @@ public class MessageActivity extends AppCompatActivity {
         intent1.putExtra("username_intent",username_intent);
         Intent intent2=new Intent(MessageActivity.this,LikeColumnActivity.class);
         intent2.putExtra("username_intent",username_intent);
-        if(main.equals("main"))
+        if(intent_intent.equals("main"))
             startActivity(intent1);
         else startActivity(intent2);
         finish();
     }
-    public static class ItemClickSupport {
+    /*public static class ItemClickSupport {
         private final RecyclerView mRecyclerView;
         private MessageActivity.ItemClickSupport.OnItemClickListener mOnItemClickListener;
         private MessageActivity.ItemClickSupport.OnItemLongClickListener mOnItemLongClickListener;
@@ -382,6 +383,6 @@ public class MessageActivity extends AppCompatActivity {
 
             boolean onItemLongClicked(RecyclerView recyclerView, int position, View v);
         }
-    }
+    }*/
 
 }

@@ -80,6 +80,7 @@ public class HotActivity extends AppCompatActivity {
 
         swipeRefreshLayout=findViewById(R.id.sre_hot);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,R.color.colorAccent,R.color.colorButton);
+        swipeRefreshLayout.setProgressViewEndTarget (false,300);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -91,7 +92,7 @@ public class HotActivity extends AppCompatActivity {
                         hotList.clear();
                         sendRequestWithHttpURLConnection();
                     }
-                }, 3000);
+                }, 1000);
             }
         });
         if (ContextCompat.checkSelfPermission(HotActivity.this, Manifest.permission.INTERNET)!= PackageManager.PERMISSION_GRANTED)
@@ -101,7 +102,7 @@ public class HotActivity extends AppCompatActivity {
             sendRequestWithHttpURLConnection();
         }
 
-        HotActivity.ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new HotActivity.ItemClickSupport.OnItemClickListener() {
+        /*HotActivity.ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new HotActivity.ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                 final Hot hot = hotList.get(position);
@@ -111,11 +112,11 @@ public class HotActivity extends AppCompatActivity {
                 intent.putExtra("NewsId_intent",hot.getNews_id());
                 intent.putExtra("Url_intent",hot.getUrl());
                 intent.putExtra("Thumbnail_intent",hot.getThumbnail());
-                intent.putExtra("hot","hot");
+                intent.putExtra("intent_intent","hot");
                 startActivity(intent);
                 finish();
             }
-        });
+        });*/
 
         top.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -186,7 +187,7 @@ public class HotActivity extends AppCompatActivity {
                 String title = jsonObject1.getString("title");
                 String thumbnail=jsonObject1.getString("thumbnail");
                 String url=jsonObject1.getString("url");
-                hotList.add(new Hot(title,news_id,thumbnail,url));
+                hotList.add(new Hot(username_intent,title,news_id,thumbnail,url));
             }
             showResponse();
         } catch (Exception e) {
@@ -204,7 +205,7 @@ public class HotActivity extends AppCompatActivity {
         });
     }
 
-    public static class ItemClickSupport {
+    /*public static class ItemClickSupport {
         private final RecyclerView mRecyclerView;
         private HotActivity.ItemClickSupport.OnItemClickListener mOnItemClickListener;
         private HotActivity.ItemClickSupport.OnItemLongClickListener mOnItemLongClickListener;
@@ -291,7 +292,7 @@ public class HotActivity extends AppCompatActivity {
 
             boolean onItemLongClicked(RecyclerView recyclerView, int position, View v);
         }
-    }
+    }*/
 
     public abstract class HidingScrollListener extends RecyclerView.OnScrollListener {
         private static final int HIDE_THRESHOLD = 20;

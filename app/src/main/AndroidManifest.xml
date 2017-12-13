@@ -40,7 +40,8 @@
         <activity android:name=".AboutActivity" />
         <activity android:name=".CollectionActivity" />
         <activity android:name=".IndexActivity" />
-        <activity android:name=".HotActivity" />
+        <activity android:name=".HotActivity"
+            android:launchMode="singleTask"/>
         <activity android:name=".LikeColumnActivity" />
         <activity android:name=".LikeArticleActivity" />
         <activity android:name=".ArticleActivity" />

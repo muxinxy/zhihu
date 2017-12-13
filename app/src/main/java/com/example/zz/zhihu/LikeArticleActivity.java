@@ -47,7 +47,7 @@ public class LikeArticleActivity extends AppCompatActivity {
                 String thumbnail=cursor.getString(cursor.getColumnIndex("thumbnail"));
                 String url=cursor.getString(cursor.getColumnIndex("url"));
                 if (username.equals(username_intent)){
-                    like_articleList.add(new LikeArticle(title,news_id,thumbnail,url));
+                    like_articleList.add(new LikeArticle(username_intent,title,news_id,thumbnail,url));
                 }
             }while (cursor.moveToNext());
         }
@@ -73,6 +73,7 @@ public class LikeArticleActivity extends AppCompatActivity {
 
         swipeRefreshLayout=findViewById(R.id.sre_like_article);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,R.color.colorAccent,R.color.colorButton);
+        swipeRefreshLayout.setProgressViewEndTarget (false,300);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -92,7 +93,7 @@ public class LikeArticleActivity extends AppCompatActivity {
                                 String thumbnail=cursor.getString(cursor.getColumnIndex("thumbnail"));
                                 String url=cursor.getString(cursor.getColumnIndex("url"));
                                 if (username.equals(username_intent)){
-                                    like_articleList.add(new LikeArticle(title,news_id,thumbnail,url));
+                                    like_articleList.add(new LikeArticle(username_intent,title,news_id,thumbnail,url));
                                 }
                             }while (cursor.moveToNext());
                         }
@@ -100,7 +101,7 @@ public class LikeArticleActivity extends AppCompatActivity {
                         sdb.close();
                         showResponse();
                     }
-                }, 3000);
+                }, 1000);
             }
         });
         if (ContextCompat.checkSelfPermission(LikeArticleActivity.this, Manifest.permission.INTERNET)!= PackageManager.PERMISSION_GRANTED)
@@ -120,7 +121,7 @@ public class LikeArticleActivity extends AppCompatActivity {
                 intent.putExtra("like_NewsId_intent",like_article.getNews_id());
                 intent.putExtra("Url_intent",like_article.getUrl());
                 intent.putExtra("Thumbnail_intent",like_article.getThumbnail());
-                intent.putExtra("hot","like");
+                intent.putExtra("intent_intent","like_article");
                 startActivity(intent);
                 finish();
             }
