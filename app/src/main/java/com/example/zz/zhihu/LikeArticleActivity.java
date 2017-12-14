@@ -160,7 +160,6 @@ public class LikeArticleActivity extends AppCompatActivity {
             switch (msgId) {
                 case 1:
                     // do some action
-                    swipeRefreshLayout.setRefreshing(false);
                     like_articleList.clear();
                     SQLiteDatabase sdb = dbHelper.getReadableDatabase();
                     Cursor cursor=sdb.query("like_article_table",null,null,null,null,null,null);

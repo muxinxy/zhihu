@@ -5,8 +5,10 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -17,13 +19,16 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -37,6 +42,8 @@ public class PersonActivity extends AppCompatActivity {
     private String imagePath;
     public static final int CHOOSE_PHOTO=2;
     private boolean set_user_image=false;
+    private String username_intent;
+    private EditText OldPassword,NewPassword,re_NewPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +52,7 @@ public class PersonActivity extends AppCompatActivity {
         dbHelper =new MyDatabaseHelper(this,"data.db",null,1) ;
         dbHelper.getWritableDatabase();
         Intent intent=getIntent();
-        final String username_intent=intent.getStringExtra("username_intent");
+        username_intent=intent.getStringExtra("username_intent");
         Button person_yes=findViewById(R.id.person_yes);
         Button person_no=findViewById(R.id.person_no);
         final EditText person_nickname=findViewById(R.id.person_nickname);
@@ -56,6 +63,46 @@ public class PersonActivity extends AppCompatActivity {
         final Button change_user_image=findViewById(R.id.change_user_image);
         final RadioButton btnWoman=findViewById(R.id.btnWoman);
         final RadioButton btnMan=findViewById(R.id.btnMan);
+        final Button ChangePassword=findViewById(R.id.ChangePassword);
+
+        ChangePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /**
+                 * 设置内容区域为自定义View
+                 */
+                View view = LayoutInflater.from(PersonActivity.this).inflate(R.layout.change_password,null);
+                AlertDialog.Builder dialog = new AlertDialog.Builder(PersonActivity.this);
+                dialog.setTitle("修改密码");
+                dialog.setIcon(R.drawable.password);
+                dialog.setView(view);
+                dialog.setCancelable(false);
+                OldPassword=view.findViewById(R.id.OldPassword);
+                NewPassword=view.findViewById(R.id.NewPassword);
+                re_NewPassword=view.findViewById(R.id.re_NewPassword);
+                dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (check1()&&check2()){
+                            SQLiteDatabase db=dbHelper.getReadableDatabase();
+                            ContentValues values=new ContentValues();
+                            values.put("password",NewPassword.getText().toString().trim());
+                            db.update("user_table",values,"username=?",new String[]{username_intent});
+                            Toast.makeText(PersonActivity.this,"修改成功",Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                dialog.setNeutralButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alert = dialog.create();
+                alert.show();
+            }
+        });
 
         SQLiteDatabase sdb = dbHelper.getReadableDatabase();
         Cursor cursor=sdb.query("user_table",null,null,null,null,null,null);
@@ -263,6 +310,35 @@ public class PersonActivity extends AppCompatActivity {
         intent.putExtra("username_intent",username.getText().toString());
         startActivity(intent);
         finish();
+    }
+    public boolean check1(){
+        String username,password=null;
+        SQLiteDatabase db=dbHelper.getReadableDatabase();
+        Cursor cursor=db.query("user_table",null,null,null,null,null,null);
+        if (cursor.moveToFirst()){
+            do {
+                username=cursor.getString(cursor.getColumnIndex("username"));
+                password=cursor.getString(cursor.getColumnIndex("password"));
+                if (username.equals(username_intent))break;
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        if (OldPassword.getText().toString().equals(""))Toast.makeText(PersonActivity.this,"原密码不能为空",Toast.LENGTH_SHORT).show();
+        else if (!password.equals(OldPassword.getText().toString())){
+            Toast.makeText(PersonActivity.this,"原密码不正确",Toast.LENGTH_SHORT).show();
+        } else return true;
+        return false;
+    }
+    public boolean check2(){
+        if (NewPassword.getText().toString().equals("")||re_NewPassword.getText().toString().equals("")){
+            Toast.makeText(PersonActivity.this,"密码不能为空",Toast.LENGTH_SHORT).show();
+        }else if (NewPassword.getText().toString().contains(" ")||re_NewPassword.getText().toString().contains(" ")){
+            Toast.makeText(PersonActivity.this,"不能包含空格",Toast.LENGTH_SHORT).show();
+        }else if (!NewPassword.getText().toString().equals(re_NewPassword.getText().toString())){
+            Toast.makeText(PersonActivity.this,"两次密码输入不一致",Toast.LENGTH_SHORT).show();
+        }else return true;
+        return false;
     }
 
 }

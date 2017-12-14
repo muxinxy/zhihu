@@ -153,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
                 ( new Handler()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        swipeRefreshLayout.setRefreshing(false);
                         columnList.clear();
                         sendRequestWithHttpURLConnection();
                     }
@@ -261,6 +260,7 @@ public class MainActivity extends AppCompatActivity {
                 RecyclerView recyclerView = findViewById(R.id.rev_main);
                 ColumnAdapter adapter = new ColumnAdapter(columnList);
                 recyclerView.setAdapter(adapter);
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
     }

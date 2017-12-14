@@ -94,7 +94,6 @@ public class HotActivity extends AppCompatActivity {
                 ( new Handler()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        swipeRefreshLayout.setRefreshing(false);
                         hotList.clear();
                         sendRequestWithHttpURLConnection();
                     }
@@ -293,6 +292,7 @@ public class HotActivity extends AppCompatActivity {
                 RecyclerView recyclerView = findViewById(R.id.rev_hot);
                 HotAdapter adapter = new HotAdapter(hotList);
                 recyclerView.setAdapter(adapter);
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
     }
