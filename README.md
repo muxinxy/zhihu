@@ -1,4 +1,4 @@
-# zhihu ![zhihu](zhihu/app/src/main/res/drawable/zhihu.png)
+# zhihu ![zhihu](https://github.com/muxinxy/zhihu/blob/master/app/src/main/res/drawable/zhihu.png)
 
 ## 知乎日报api
 
