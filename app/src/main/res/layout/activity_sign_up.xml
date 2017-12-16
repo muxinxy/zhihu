@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.zz.zhihu.SignUpActivity">
+    tools:context="com.example.zz.zhihu.activity.SignUpActivity">
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_sign_up"
         android:layout_height="?attr/actionBarSize"
@@ -23,7 +23,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center">
+        android:gravity="center"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:background="@drawable/login_bg">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,6 +38,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="     昵称    "
+                    android:textColor="#ffffff"
                     android:paddingStart="@android:dimen/app_icon_size"
                     tools:ignore="RtlSymmetry" />
                 <EditText
@@ -56,7 +59,8 @@
                     android:layout_height="wrap_content"
                     android:text="     账号    "
                     android:paddingStart="@android:dimen/app_icon_size"
-                    tools:ignore="RtlSymmetry" />
+                    tools:ignore="RtlSymmetry"
+                    android:textColor="#ffffff"/>
                 <EditText
                     android:layout_width="200sp"
                     android:layout_height="45sp"
@@ -75,6 +79,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="     密码    "
+                    android:textColor="#ffffff"
                     android:paddingStart="@android:dimen/app_icon_size"
                     tools:ignore="RtlSymmetry" />
                 <EditText
@@ -95,6 +100,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="确认密码"
+                    android:textColor="#ffffff"
                     android:paddingStart="@android:dimen/app_icon_size"
                     tools:ignore="RtlSymmetry" />
                 <EditText

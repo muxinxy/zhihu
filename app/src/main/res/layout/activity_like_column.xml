@@ -26,7 +26,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="栏目收藏"
+                        android:text="收藏栏目"
                         android:textColor="#ffffff"
                         android:textSize="24sp"
                         android:layout_gravity="center"/>

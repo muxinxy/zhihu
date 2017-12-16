@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.zz.zhihu.IndexActivity">
+    tools:context="com.example.zz.zhihu.activity.IndexActivity">
 <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -40,7 +40,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:background="@drawable/login_bg"
+        android:layout_marginTop="?attr/actionBarSize">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -50,6 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="头像"
+                android:textColor="#ffffff"
                 android:layout_gravity="center_vertical"/>
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="70sp"
@@ -68,6 +71,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:layout_height="wrap_content"
+                android:textColor="#ffffff"
                 android:text="昵称"/>
             <TextView
                 android:layout_width="0sp"
@@ -88,6 +92,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:layout_height="wrap_content"
+                android:textColor="#ffffff"
                 android:text="账号"/>
             <TextView
                 android:layout_width="0sp"
@@ -108,6 +113,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:layout_height="wrap_content"
+                android:textColor="#ffffff"
                 android:text="性别"/>
             <TextView
                 android:layout_width="0sp"
@@ -128,6 +134,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:layout_height="wrap_content"
+                android:textColor="#ffffff"
                 android:text="个性签名" />
             <TextView
                 android:layout_width="0sp"
@@ -141,16 +148,34 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="专栏收藏"
+            android:text="收藏栏目"
+            android:drawableLeft="@drawable/collect1"
             android:background="@drawable/shape"
             android:id="@+id/index_like_column"
             android:layout_marginTop="10dp"/>
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="文章收藏"
+            android:text="收藏文章"
+            android:drawableLeft="@drawable/collect1"
             android:background="@drawable/shape"
             android:id="@+id/index_like_article"
+            android:layout_marginTop="10dp"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="喜爱栏目"
+            android:drawableLeft="@drawable/love1"
+            android:background="@drawable/shape"
+            android:id="@+id/index_love_column"
+            android:layout_marginTop="10dp"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="喜爱文章"
+            android:drawableLeft="@drawable/love1"
+            android:background="@drawable/shape"
+            android:id="@+id/index_love_article"
             android:layout_marginTop="10dp"/>
     </LinearLayout>
 </FrameLayout>
