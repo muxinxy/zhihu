@@ -1,14 +1,18 @@
 package com.example.zz.zhihu.activity;
 
 import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -38,6 +42,7 @@ public class MessageActivity extends AppCompatActivity {
     private String username_intent;
     private String Url,LCN,SCN,id;//long commits number and short commits number
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +108,7 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     private void sendRequestWithHttpURLConnection() {
+        pd = ProgressDialog.show(MessageActivity.this, "栏目详情", "加载中，请稍后……");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -130,6 +136,7 @@ public class MessageActivity extends AppCompatActivity {
                             reader.close();
                         } catch (IOException e) {
                             e.printStackTrace();
+                            //handler.sendEmptyMessage(8000);
                         }
                     }
                     if (connection != null) {
@@ -165,10 +172,6 @@ public class MessageActivity extends AppCompatActivity {
         }
     }
 
-
-
-
-
     private void showResponse() {
         runOnUiThread(new Runnable() {
             @Override
@@ -176,7 +179,15 @@ public class MessageActivity extends AppCompatActivity {
                 RecyclerView recyclerView = findViewById(R.id.rev_message);
                 MessageAdapter adapter = new MessageAdapter(messageList);
                 recyclerView.setAdapter(adapter);
+                handler.sendEmptyMessage(0);
             }
         });
     }
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            // handler接收到消息后就会执行此方法
+            pd.dismiss();// 关闭ProgressDialog
+        }
+    };
 }

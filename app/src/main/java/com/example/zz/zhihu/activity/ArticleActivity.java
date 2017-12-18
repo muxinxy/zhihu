@@ -1,11 +1,15 @@
 package com.example.zz.zhihu.activity;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -36,6 +40,7 @@ public class ArticleActivity extends AppCompatActivity {
     private List<String> css;
     private WebView web_article;
     private String Url,NewsId_intent;
+    private ProgressDialog pd;
 
     @SuppressLint({"SetJavaScriptEnabled", "ObsoleteSdkInt"})
     @Override
@@ -47,13 +52,6 @@ public class ArticleActivity extends AppCompatActivity {
         web_article.getSettings().setJavaScriptEnabled(true);
         web_article.setWebViewClient(new WebViewClient());
         web_article.getSettings().setSupportZoom(false);
-        //web_article.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-        //web_article.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING);
-        //web_article.getSettings().setLoadWithOverviewMode(true);
-        //web_article.getSettings().setUseWideViewPort(true);
-        //web_article.getSettings().setDomStorageEnabled(true);
-        //web_article.getSettings().setAllowFileAccessFromFileURLs(true);
-        //web_article.getSettings().setAllowUniversalAccessFromFileURLs(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             web_article.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING);
@@ -95,6 +93,7 @@ public class ArticleActivity extends AppCompatActivity {
     }*/
 
     private void sendRequestWithHttpURLConnection() {
+        pd = ProgressDialog.show(ArticleActivity.this, "文章", "加载中，请稍后……");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -113,9 +112,11 @@ public class ArticleActivity extends AppCompatActivity {
                     while ((line = reader.readLine()) != null) {
                         response.append(line);
                     }
+                    handler.sendEmptyMessage(0);
                     parseJSONWithJSONObject(response.toString());
                 } catch (Exception e) {
                     e.printStackTrace();
+                    //handler.sendEmptyMessage(8000);
                 } finally {
                     if (reader != null) {
                         try {
@@ -174,4 +175,11 @@ public class ArticleActivity extends AppCompatActivity {
             }
         });
     }
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            // handler接收到消息后就会执行此方法
+            pd.dismiss();// 关闭ProgressDialog
+        }
+    };
 }

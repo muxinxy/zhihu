@@ -1,11 +1,15 @@
 package com.example.zz.zhihu.activity;
 
 import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -15,6 +19,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -54,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private String username_intent;
     private Toolbar toolbar;
     private FloatingActionButton top;
+    private ProgressDialog pd;
     //private boolean LikeColumn=false;
 
 
@@ -197,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendRequestWithHttpURLConnection() {
+        pd = ProgressDialog.show(MainActivity.this, "栏目总览", "加载中，请稍后……");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -259,6 +266,8 @@ public class MainActivity extends AppCompatActivity {
                 ColumnAdapter adapter = new ColumnAdapter(columnList);
                 recyclerView.setAdapter(adapter);
                 swipeRefreshLayout.setRefreshing(false);
+                handler.sendEmptyMessage(0);
+
             }
         });
     }
@@ -309,4 +318,11 @@ public class MainActivity extends AppCompatActivity {
         toolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
         top.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
     }
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            // handler接收到消息后就会执行此方法
+            pd.dismiss();// 关闭ProgressDialog
+        }
+    };
 }

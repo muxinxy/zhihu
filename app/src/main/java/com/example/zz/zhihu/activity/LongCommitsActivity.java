@@ -1,14 +1,18 @@
 package com.example.zz.zhihu.activity;
 
 import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -31,7 +35,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class LongCommitsActivity extends AppCompatActivity {
@@ -40,6 +46,7 @@ public class LongCommitsActivity extends AppCompatActivity {
     private String Url;
     private SwipeRefreshLayout swipeRefreshLayout;
     private String LCN;//long commits number
+    private ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +111,7 @@ public class LongCommitsActivity extends AppCompatActivity {
     }
 
     private void sendRequestWithHttpURLConnection() {
+        pd = ProgressDialog.show(LongCommitsActivity.this, "长评论", "加载中，请稍后……");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -125,6 +133,7 @@ public class LongCommitsActivity extends AppCompatActivity {
                     parseJSONWithJSONObject(response.toString());
                 } catch (Exception e) {
                     e.printStackTrace();
+                    //handler.sendEmptyMessage(8000);
                 } finally {
                     if (reader != null) {
                         try {
@@ -160,7 +169,9 @@ public class LongCommitsActivity extends AppCompatActivity {
                     String content = jsonObject1.getString("content");
                     String id = jsonObject1.getString("id");
                     String avatar = jsonObject1.getString("avatar");
-                    String time = jsonObject1.getString("time");
+                    String date = jsonObject1.getString("time");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String time = dateFormat.format(new Date(Long.parseLong(date)*1000));
                     String likes = jsonObject1.getString("likes");
                     if(jsonLength.equals("7")){
                         JSONObject reply_to=jsonObject1.getJSONObject("reply_to");
@@ -198,7 +209,15 @@ public class LongCommitsActivity extends AppCompatActivity {
                 RecyclerView recyclerView = findViewById(R.id.rev_long_commits);
                 LongCommitsAdapter adapter = new LongCommitsAdapter(LongCommitsList);
                 recyclerView.setAdapter(adapter);
+                handler.sendEmptyMessage(0);
             }
         });
     }
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            // handler接收到消息后就会执行此方法
+            pd.dismiss();// 关闭ProgressDialog
+        }
+    };
 }

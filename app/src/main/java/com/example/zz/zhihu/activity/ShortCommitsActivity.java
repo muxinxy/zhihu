@@ -1,14 +1,18 @@
 package com.example.zz.zhihu.activity;
 
 import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -19,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.zz.zhihu.R;
+import com.example.zz.zhihu.item.LongCommits;
 import com.example.zz.zhihu.item.ShortCommits;
 import com.example.zz.zhihu.adapter.ShortCommitsAdapter;
 
@@ -40,6 +45,7 @@ public class ShortCommitsActivity extends AppCompatActivity {
     private String Url;
     private SwipeRefreshLayout swipeRefreshLayout;
     private String SCN;//short commits number
+    private ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +109,7 @@ public class ShortCommitsActivity extends AppCompatActivity {
     }
 
     private void sendRequestWithHttpURLConnection() {
+        pd = ProgressDialog.show(ShortCommitsActivity.this, "长评论", "加载中，请稍后……");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -130,6 +137,7 @@ public class ShortCommitsActivity extends AppCompatActivity {
                             reader.close();
                         } catch (IOException e) {
                             e.printStackTrace();
+                            //handler.sendEmptyMessage(8000);
                         }
                     }
                     if (connection != null) {
@@ -194,7 +202,15 @@ public class ShortCommitsActivity extends AppCompatActivity {
                 RecyclerView recyclerView = findViewById(R.id.rev_short_commits);
                 ShortCommitsAdapter adapter = new ShortCommitsAdapter(ShortCommitsList);
                 recyclerView.setAdapter(adapter);
+                handler.sendEmptyMessage(0);
             }
         });
     }
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            // handler接收到消息后就会执行此方法
+                    pd.dismiss();// 关闭ProgressDialog
+            }
+    };
 }
