@@ -19,12 +19,6 @@ import com.example.zz.zhihu.MyDatabaseHelper;
 import com.example.zz.zhihu.R;
 import com.example.zz.zhihu.activity.MessageActivity;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
 
 public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.ViewHolder>{
@@ -40,9 +34,8 @@ public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.ViewHolder
         TextView columnName;
         TextView columnDescription;
         ImageView like_column;
-        ImageView love_column;
 
-        ViewHolder(View view) {
+        public ViewHolder(View view) {
             super(view);
             columnView=view;
             cardView = (CardView) view;
@@ -50,7 +43,6 @@ public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.ViewHolder
             columnName = view.findViewById(R.id.column_name);
             columnDescription=view.findViewById(R.id.column_description);
             like_column=view.findViewById(R.id.like_column);
-            love_column=view.findViewById(R.id.love_column);
         }
     }
     public ColumnAdapter(List<Column> columnList) {
@@ -119,47 +111,6 @@ public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.ViewHolder
                 }
             }
         });
-        holder.love_column.setOnClickListener(new View.OnClickListener() {
-            @SuppressWarnings("deprecation")
-            @Override
-            public void onClick(View v) {
-                boolean LoveColumn=false;
-                int position=holder.getAdapterPosition();
-                Column column= mColumnList.get(position);
-                dbHelper =new MyDatabaseHelper(mContext,"data.db",null,1) ;
-                SQLiteDatabase db = dbHelper.getWritableDatabase();
-                Cursor cursor=db.query("love_column_table",null,null,null,null,null,null);
-                if (cursor.moveToFirst()) {
-                    do {
-                        String username=cursor.getString(cursor.getColumnIndex("username"));
-                        String news_id=cursor.getString(cursor.getColumnIndex("column_id"));
-                        if (username.equals(column.getUsername())&&news_id.equals(column.getId())){
-                            LoveColumn=true;
-                            break;
-                        }
-                    }while (cursor.moveToNext());
-                }
-                cursor.close();
-                if (!LoveColumn){
-                    ContentValues values = new ContentValues();
-                    values.put("column_id",column.getId());
-                    values.put("username",column.getUsername());
-                    values.put("name",column.getName());
-                    values.put("thumbnail",column.getThumbnail());
-                    db.insert("love_column_table", null, values);
-                    db.close();
-                    values.clear();
-                    sendRequestWithHttpURLConnection(column.getId());
-                    Toast.makeText(mContext,"已喜爱",Toast.LENGTH_SHORT).show();
-                    Glide.with(mContext).load(R.drawable.love1).asBitmap().into(holder.love_column);
-                }else {
-                    db.delete("love_column_table","column_id=?",new String[]{column.getId()});
-                    db.close();
-                    Toast.makeText(mContext,"已取消喜爱",Toast.LENGTH_SHORT).show();
-                    Glide.with(mContext).load(R.drawable.love0).asBitmap().into(holder.love_column);
-                }
-            }
-        });
         return holder;
     }
 
@@ -186,71 +137,10 @@ public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.ViewHolder
         }
         cursor.close();
         db.close();
-        SQLiteDatabase sdb = dbHelper.getWritableDatabase();
-        Cursor cursor1=sdb.query("love_column_table",null,null,null,null,null,null);
-        if (cursor1.moveToFirst()) {
-            do {
-                String username=cursor1.getString(cursor1.getColumnIndex("username"));
-                String article_id=cursor1.getString(cursor1.getColumnIndex("column_id"));
-                if (username.equals(column.getUsername())&&article_id.equals(column.getId())){
-                    Glide.with(mContext).load(R.drawable.love1).asBitmap().into(holder.love_column);
-                    break;
-                }else {
-                    Glide.with(mContext).load(R.drawable.love0).asBitmap().into(holder.love_column);
-                }
-            }while (cursor1.moveToNext());
-        }
-        cursor1.close();
-        sdb.close();
 }
     @Override
     public int getItemCount() {
         return mColumnList.size();
-    }
-
-    private void sendRequestWithHttpURLConnection(final String id) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                HttpURLConnection connection = null;
-                BufferedReader reader = null;
-                try {
-                    URL url = new URL("http://news-at.zhihu.com/api/3/section/"+ id);
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestMethod("GET");
-                    connection.setConnectTimeout(8000);
-                    connection.setReadTimeout(8000);
-                    InputStream in = connection.getInputStream();
-                    reader = new BufferedReader(new InputStreamReader(in));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    parseJSONWithJSONObject(response.toString(),id);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    if (reader != null) {
-                        try {
-                            reader.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    if (connection != null) {
-                        connection.disconnect();
-                    }
-                }
-            }
-        }).start();
-    }
-
-    private void parseJSONWithJSONObject(String s,String id) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("json",s);
-        db.update("love_column_table",values,"column_id=",new String[]{id});
     }
 
 }

@@ -38,23 +38,11 @@
                 android:textSize="12sp" />
 
         </LinearLayout>
-        <LinearLayout
+        <ImageView
             android:layout_width="0sp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="0sp"
-            android:layout_weight="1"
             android:src="@drawable/collection"
             android:id="@+id/like_article"/>
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="0sp"
-                android:layout_weight="1"
-                android:src="@drawable/love0"
-                android:id="@+id/love_article"/>
-        </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>

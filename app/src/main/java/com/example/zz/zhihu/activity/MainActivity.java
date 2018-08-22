@@ -137,6 +137,11 @@ public class MainActivity extends AppCompatActivity {
                         intent4.putExtra("username_intent",username_intent);
                         startActivity(intent4);
                         break;
+                    case R.id.nav_lastest:
+                        Intent intent5=new Intent(MainActivity.this,LastNewsActivity.class);
+                        intent5.putExtra("username_intent",username_intent);
+                        startActivity(intent5);
+                        break;
                 }
                 mydrawerLayout.closeDrawers();
                 return true;

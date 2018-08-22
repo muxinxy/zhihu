@@ -34,7 +34,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     private List<Messages> mMessageList;
     private Context mContext;
     private MyDatabaseHelper dbHelper;
-    private String json;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         View messageView;
@@ -42,7 +41,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         TextView messageTitle;
         TextView messageDate;
         ImageView like_article;
-        ImageView love_article;
+        TextView LongCommitsNum;
+        TextView ShortCommitsNum;
 
         ViewHolder(View view) {
             super(view);
@@ -51,7 +51,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             messageTitle = view.findViewById(R.id.message_title);
             messageDate=view.findViewById(R.id.message_date);
             like_article=view.findViewById(R.id.like_article);
-            love_article=view.findViewById(R.id.love_article);
+            //LongCommitsNum=view.findViewById(R.id.LongCommitsNum);
+            //ShortCommitsNum=view.findViewById(R.id.ShortCommitsNum);
         }
     }
 
@@ -84,8 +85,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             @SuppressWarnings("deprecation")
             @Override
             public void onClick(View v) {
-                boolean LikeArticle=false;
-
+                boolean LikeColumn=false;
                 int position=holder.getAdapterPosition();
                 Messages message= mMessageList.get(position);
                 dbHelper =new MyDatabaseHelper(mContext,"data.db",null,1) ;
@@ -96,13 +96,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                         String username=cursor.getString(cursor.getColumnIndex("username"));
                         String news_id=cursor.getString(cursor.getColumnIndex("news_id"));
                         if (username.equals(message.getUsername())&&news_id.equals(message.getId())){
-                            LikeArticle=true;
+                            LikeColumn=true;
                             break;
                         }
                     }while (cursor.moveToNext());
                 }
                 cursor.close();
-                if (!LikeArticle){
+                if (!LikeColumn){
                     ContentValues values = new ContentValues();
                     values.put("news_id",message.getId());
                     values.put("username",message.getUsername());
@@ -118,48 +118,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     db.close();
                     Toast.makeText(mContext,"已取消收藏",Toast.LENGTH_SHORT).show();
                     Glide.with(mContext).load(R.drawable.collection).asBitmap().into(holder.like_article);
-                }
-            }
-        });
-        holder.love_article.setOnClickListener(new View.OnClickListener() {
-            @SuppressWarnings("deprecation")
-            @Override
-            public void onClick(View v) {
-                boolean LoveArticle=false;
-                int position=holder.getAdapterPosition();
-                Messages message= mMessageList.get(position);
-                dbHelper =new MyDatabaseHelper(mContext,"data.db",null,1) ;
-                SQLiteDatabase db = dbHelper.getWritableDatabase();
-                Cursor cursor=db.query("love_article_table",null,null,null,null,null,null);
-                if (cursor.moveToFirst()) {
-                    do {
-                        String username=cursor.getString(cursor.getColumnIndex("username"));
-                        String news_id=cursor.getString(cursor.getColumnIndex("news_id"));
-                        if (username.equals(message.getUsername())&&news_id.equals(message.getId())){
-                            LoveArticle=true;
-                            break;
-                        }
-                    }while (cursor.moveToNext());
-                }
-                cursor.close();
-                if (!LoveArticle){
-                    sendRequestWithHttpURLConnection(message.getId());
-                    ContentValues values = new ContentValues();
-                    values.put("json",json);
-                    values.put("news_id",message.getId());
-                    values.put("username",message.getUsername());
-                    values.put("title",message.getTitle());
-                    values.put("thumbnail",message.getImages());
-                    db.insert("love_article_table", null, values);
-                    db.close();
-                    values.clear();
-                    Toast.makeText(mContext,"已喜爱",Toast.LENGTH_SHORT).show();
-                    Glide.with(mContext).load(R.drawable.love1).asBitmap().into(holder.love_article);
-                }else {
-                    db.delete("love_article_table","news_id=?",new String[]{message.getId()});
-                    db.close();
-                    Toast.makeText(mContext,"已取消喜爱",Toast.LENGTH_SHORT).show();
-                    Glide.with(mContext).load(R.drawable.love0).asBitmap().into(holder.love_article);
                 }
             }
         });
@@ -189,62 +147,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         }
         cursor.close();
         db.close();
-        SQLiteDatabase sdb = dbHelper.getWritableDatabase();
-        Cursor cursor1=sdb.query("love_article_table",null,null,null,null,null,null);
-        if (cursor1.moveToFirst()) {
-            do {
-                String username=cursor1.getString(cursor1.getColumnIndex("username"));
-                String article_id=cursor1.getString(cursor1.getColumnIndex("news_id"));
-                if (username.equals(message.getUsername())&&article_id.equals(message.getId())){
-                    Glide.with(mContext).load(R.drawable.love1).asBitmap().into(holder.love_article);
-                    break;
-                }else {
-                    Glide.with(mContext).load(R.drawable.love0).asBitmap().into(holder.love_article);
-                }
-            }while (cursor1.moveToNext());
-        }
-        cursor1.close();
-        sdb.close();
     }
     @Override
     public int getItemCount() {
         return mMessageList.size();
-    }
-    private void sendRequestWithHttpURLConnection(final String id) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                HttpURLConnection connection = null;
-                BufferedReader reader = null;
-                try {
-                    URL url = new URL("http://news-at.zhihu.com/api/2/news/" + id);
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestMethod("GET");
-                    connection.setConnectTimeout(8000);
-                    connection.setReadTimeout(8000);
-                    InputStream in = connection.getInputStream();
-                    reader = new BufferedReader(new InputStreamReader(in));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    json=response.toString();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    if (reader != null) {
-                        try {
-                            reader.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    if (connection != null) {
-                        connection.disconnect();
-                    }
-                }
-            }
-        }).start();
     }
 }

@@ -29,4 +29,5 @@
     <string name="PersonQuit">取消</string>
     <string name="ChangePassword">修改密码</string>
     <string name="_1_15">1-15位</string>
+    <string name="lastest">最新消息</string>
 </resources>

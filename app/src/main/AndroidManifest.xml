@@ -48,7 +48,10 @@
         <activity android:name=".activity.LongCommitsActivity" />
         <activity android:name=".activity.ShortCommitsActivity" />
         <activity android:name=".activity.LoveColumnActivity" />
-        <activity android:name=".activity.LoveArticleActivity"/>
+        <activity android:name=".activity.LoveArticleActivity" />
+        <activity android:name=".activity.LastNewsActivity">
+
+        </activity>
     </application>
 
 </manifest>

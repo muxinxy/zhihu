@@ -13,6 +13,10 @@
             android:id="@+id/nav_hot"
             android:icon="@drawable/hot"
             android:title="@string/Hot"/>
+        <item
+            android:id="@+id/nav_lastest"
+            android:icon="@drawable/lastest"
+            android:title="@string/lastest"/>
     </group>
     <item android:title="@string/Other">
         <menu>
